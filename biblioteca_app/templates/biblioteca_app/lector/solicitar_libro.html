@@ -1,0 +1,117 @@
+<!--
+    Vista exclusiva para buscar libros externos y solicitar su incorporación.
+    La búsqueda se realiza mediante Open Library y el envío conserva los
+    datos seleccionados en campos ocultos para reutilizar el backend actual.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% load static %}
+
+{% block title %}Solicita tu libro · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Solicita tu libro{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-lector-solicitar-libro.css' %}">
+{% endblock %}
+
+{% block content %}
+<section class="request-hero">
+    <div class="request-hero-copy">
+        <span class="eyebrow">NUEVA SOLICITUD</span>
+        <h1>Solicita tu libro aquí</h1>
+        <p>Busca el libro en Open Library, revisa la información y solicítalo para que la biblioteca evalúe traerlo.</p>
+    </div>
+    <div class="request-hero-icon" aria-hidden="true">
+        <i class="bi bi-book-half"></i>
+    </div>
+</section>
+
+<section class="request-search-card">
+    <div class="request-search-header">
+        <div>
+            <span class="section-eyebrow">BÚSQUEDA EXTERNA</span>
+            <h2>¿Qué libro estás buscando?</h2>
+            <p>Escribe el título y revisa los resultados encontrados.</p>
+        </div>
+    </div>
+
+    <form id="openLibrarySearchForm" class="request-search-form" autocomplete="off" data-search-url="{% url 'open_library_buscar' %}">
+        {% csrf_token %}
+        <div class="request-search-input-wrap">
+            <i class="bi bi-search"></i>
+            <input id="openLibraryQuery" name="q" type="search" maxlength="200" placeholder="Ejemplo: Clean Code" required>
+        </div>
+        <button class="btn-ui btn-red" type="submit" id="openLibrarySearchButton">
+            <i class="bi bi-search"></i>
+            Buscar libro
+        </button>
+    </form>
+
+    <div id="openLibraryStatus" class="request-status" role="status" aria-live="polite"></div>
+
+    <div id="openLibraryResults" class="open-library-results"></div>
+</section>
+
+<section class="request-history-card">
+    <div class="request-history-header">
+        <div>
+            <span class="section-eyebrow">MIS SOLICITUDES</span>
+            <h2>Solicitudes recientes</h2>
+        </div>
+    </div>
+
+    <div class="request-history-list">
+        {% for solicitud in solicitudes_libro %}
+            <article class="request-history-item">
+                <div class="request-history-icon">
+                    {% if solicitud.Estado == 'ADQUIRIDA' %}
+                        <i class="bi bi-check-circle"></i>
+                    {% elif solicitud.Estado == 'EN_ADQUISICION' %}
+                        <i class="bi bi-box-seam"></i>
+                    {% elif solicitud.Estado == 'RECHAZADA' %}
+                        <i class="bi bi-x-circle"></i>
+                    {% else %}
+                        <i class="bi bi-hourglass-split"></i>
+                    {% endif %}
+                </div>
+                <div class="request-history-copy">
+                    <strong>{{ solicitud.Titulo }}</strong>
+                    <span>
+                        {% if solicitud.Estado == 'PENDIENTE' %}
+                            Pendiente de revisión por la biblioteca.
+                        {% elif solicitud.Estado == 'EN_ADQUISICION' %}
+                            La biblioteca está gestionando la adquisición.
+                        {% elif solicitud.Estado == 'ADQUIRIDA' %}
+                            El libro fue incorporado al catálogo.
+                        {% else %}
+                            La solicitud fue rechazada.
+                        {% endif %}
+                    </span>
+                </div>
+                <span class="request-state">{{ solicitud.Estado|cut:'_' }}</span>
+            </article>
+        {% empty %}
+            <div class="request-empty">
+                <i class="bi bi-inbox"></i>
+                <strong>Aún no has solicitado libros</strong>
+                <span>Las solicitudes que envíes aparecerán aquí.</span>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+
+<!-- Formulario oculto reutilizado para mantener el backend de solicitud existente. -->
+<form id="bookRequestForm" method="post" action="{% url 'solicitar_libro' %}" hidden>
+    {% csrf_token %}
+    <input type="hidden" name="Titulo" id="requestTitulo">
+    <input type="hidden" name="Autor" id="requestAutor">
+    <input type="hidden" name="Editorial" id="requestEditorial">
+    <input type="hidden" name="Anio" id="requestAnio">
+    <input type="hidden" name="PortadaURL" id="requestPortadaURL">
+    <input type="hidden" name="OpenLibraryKey" id="requestOpenLibraryKey">
+</form>
+{% endblock %}
+
+{% block extra_js %}
+<script src="{% static 'biblioteca_app/js/biblioteca-app-lector-solicitar-libro.js' %}"></script>
+{% endblock %}

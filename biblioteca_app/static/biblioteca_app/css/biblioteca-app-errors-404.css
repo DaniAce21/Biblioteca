@@ -1,0 +1,89 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ================================================================
+   ESTILOS DE LA PLANTILLA: biblioteca_app/errors/404.html
+   ================================================================ */
+
+/* ---------------- BLOQUE DE ESTILOS 1 ---------------- */
+.error-container {
+        min-height: calc(100vh - 120px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 40px 20px;
+    }
+
+    .error-card {
+        max-width: 650px;
+        width: 100%;
+        background: #ffffff;
+        border-radius: 16px;
+        padding: 50px 40px;
+        text-align: center;
+        box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        border-top: 6px solid #C8102E;
+    }
+
+    .error-code {
+        font-size: 100px;
+        line-height: 1;
+        font-weight: 800;
+        color: #C8102E;
+        margin-bottom: 15px;
+    }
+
+    .error-card h1 {
+        color: #111111;
+        font-size: 32px;
+        margin: 0 0 15px;
+    }
+
+    .error-card p {
+        color: #666666;
+        font-size: 17px;
+        line-height: 1.6;
+        margin-bottom: 30px;
+    }
+
+    .error-url {
+        background: #f5f5f5;
+        border-radius: 8px;
+        padding: 12px;
+        margin-bottom: 25px;
+        color: #555555;
+        font-size: 14px;
+        word-break: break-all;
+    }
+
+    .btn {
+        display: inline-block;
+        background: #C8102E;
+        color: #ffffff;
+        text-decoration: none;
+        padding: 13px 25px;
+        border-radius: 8px;
+        font-weight: 600;
+        transition: 0.2s;
+    }
+
+    .btn:hover {
+        background: #8B0000;
+    }
+
+    @media (max-width: 600px) {
+        .error-card {
+            padding: 40px 25px;
+        }
+
+        .error-code {
+            font-size: 75px;
+        }
+
+        .error-card h1 {
+            font-size: 26px;
+        }
+    }
+

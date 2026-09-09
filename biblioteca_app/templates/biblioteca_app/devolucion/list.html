@@ -1,0 +1,12 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Devoluciones · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Historial de devoluciones{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">DEVOLUCIONES</div><h1>Historial de devoluciones</h1><p>Consulta devoluciones confirmadas y su comportamiento.</p></div></section>
+<section class="data-card"><div class="toolbar"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#devolucionTable" placeholder="Buscar por libro o lector..."></div></div><div class="table-wrap"><table class="ui-table" id="devolucionTable"><thead><tr><th>Libro</th><th>Lector</th><th>Programada</th><th>Real</th><th>Días atraso</th><th>Estado</th></tr></thead><tbody>{% for devolucion in devoluciones %}<tr data-search="{{ devolucion.CodLibro.Titulo|lower }} {{ devolucion.CodLector.Nombres|lower }} {{ devolucion.CodLector.ApellidoP|lower }}"><td><strong>{{ devolucion.CodLibro.Titulo }}</strong></td><td>{{ devolucion.CodLector.Nombres }} {{ devolucion.CodLector.ApellidoP }}</td><td>{{ devolucion.FechaDevProgramada|date:'d/m/Y' }}</td><td>{{ devolucion.FechaDevolucionReal|date:'d/m/Y' }}</td><td>{{ devolucion.DiasAtraso }}</td><td>{% if devolucion.Estado == 'A_TIEMPO' %}<span class="pill pill-green">A tiempo</span>{% else %}<span class="pill pill-red">Atrasado</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="6"><div class="empty-state"><i class="bi bi-arrow-return-left"></i><strong>No hay devoluciones</strong><span>Las devoluciones confirmadas aparecerán aquí.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

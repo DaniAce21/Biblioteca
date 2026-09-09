@@ -1,0 +1,16 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Autores · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Autores{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">AUTORES</div><h1>Autores</h1><p>Administra autors y consulta sus registros asociados.</p></div><a href="{% url 'autor_create' %}" class="btn-ui btn-red"><i class="bi bi-plus-lg"></i> Nuevo autor</a></section>
+<div class="toolbar"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#entityTable" placeholder="Buscar autor..."></div><div class="toolbar-right"><a href="{% url 'autor_list' %}" class="btn-ui btn-dark">Ver listado</a></div></div>
+<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">REGISTROS</span><h2>Autores registrados</h2></div></div><div class="card-grid">{% for autor in autores %}
+<a class="entity-card" href="{% url 'autor_list' %}"><div class="entity-top"><div class="entity-avatar"><i class="bi bi-person-vcard"></i></div><div><div class="entity-name">{{ autor.NombreAutor }}</div><div class="entity-meta">Código {{ autor.CodAutor }}</div></div></div><div class="entity-count"><span>Libros registrados</span><strong>{{ autor.libro_autores.all|length }}</strong></div><span class="btn-ui btn-dark">Ver catálogo <i class="bi bi-arrow-right"></i></span></a>
+{% empty %}<div class="empty-state"><i class="bi bi-person"></i><strong>No hay registros</strong><span>Agrega el primer registro desde el botón superior.</span></div>{% endfor %}
+<a class="entity-card add-card" href="{% url 'autor_create' %}"><div><i class="bi bi-plus-circle"></i><strong>Agregar autor</strong><span>Nuevo registro en el sistema</span></div></a></div></section>
+{% endblock %}

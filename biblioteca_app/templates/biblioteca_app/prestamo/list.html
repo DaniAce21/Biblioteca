@@ -1,0 +1,36 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Préstamos · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Control de préstamos{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">ADMINISTRACIÓN DE PRÉSTAMOS</div><h1>Control de préstamos</h1><p>Supervisa las fechas de devolución y detecta rápidamente los préstamos próximos a vencer o atrasados.</p></div><div class="hero-meta"><span>Fecha de control</span><strong>{{ hoy|date:'d/m/Y' }}</strong></div></section>
+<!-- Cada resumen es un acceso directo al filtro correspondiente. -->
+<div class="loan-summary">
+    <a class="summary-box red" href="{% url 'prestamo_list' %}">
+        <span>Total</span>
+        <strong>{{ cantidad_total }}</strong>
+    </a>
+    <a class="summary-box green" href="?estado=VIGENTE">
+        <span>Vigentes</span>
+        <strong>{{ cantidad_vigentes }}</strong>
+    </a>
+    <a class="summary-box yellow" href="?estado=POR%20VENCER">
+        <span>Por vencer</span>
+        <strong>{{ cantidad_por_vencer }}</strong>
+    </a>
+    <a class="summary-box orange" href="?estado=VENCE%20HOY">
+        <span>Vence hoy</span>
+        <strong>{{ cantidad_hoy }}</strong>
+    </a>
+    <a class="summary-box red" href="?estado=VENCIDO">
+        <span>Vencidos</span>
+        <strong>{{ cantidad_vencidos }}</strong>
+    </a>
+</div>
+<div class="toolbar"><div class="toolbar-left"><strong>Filtrar préstamos</strong><a class="btn-ui {% if not filtro_actual %}btn-red{% else %}btn-dark{% endif %}" href="{% url 'prestamo_list' %}">Todos</a><a class="btn-ui {% if filtro_actual == 'VIGENTE' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=VIGENTE">Vigentes</a><a class="btn-ui {% if filtro_actual == 'POR VENCER' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=POR%20VENCER">Por vencer</a><a class="btn-ui {% if filtro_actual == 'VENCE HOY' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=VENCE%20HOY">Vence hoy</a><a class="btn-ui {% if filtro_actual == 'VENCIDO' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=VENCIDO">Vencidos</a></div><a href="{% url 'prestamo_create' %}" class="btn-ui btn-red"><i class="bi bi-plus-lg"></i> Nuevo préstamo</a></div>
+<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">REGISTROS</span><h2>Préstamos registrados</h2><p>Ordenados por fecha de devolución.</p></div></div><div class="table-wrap"><table class="ui-table"><thead><tr><th>Libro</th><th>Lector</th><th>Devolución</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>{% for prestamo in prestamos %}<tr><td><strong>{{ prestamo.CodLibro.Titulo }}</strong></td><td>{{ prestamo.CodLector.Nombres }} {{ prestamo.CodLector.ApellidoP }}</td><td>{{ prestamo.FechaDev|date:'d/m/Y' }}</td><td>{% if prestamo.estado == 'VIGENTE' %}<span class="pill pill-green">Vigente</span>{% elif prestamo.estado == 'POR VENCER' %}<span class="pill pill-yellow">Por vencer</span>{% elif prestamo.estado == 'VENCE HOY' %}<span class="pill pill-orange">Vence hoy</span>{% else %}<span class="pill pill-red">Vencido</span>{% endif %}<div>{{ prestamo.estado_descripcion }}</div></td><td><div class="table-actions"><a class="icon-btn" href="{% url 'prestamo_update' prestamo.CodLibro_id prestamo.CodLector_id %}" title="Editar"><i class="bi bi-pencil"></i></a><a class="icon-btn" href="{% url 'prestamo_devolver' prestamo.CodLibro_id prestamo.CodLector_id %}" title="Registrar devolución"><i class="bi bi-arrow-return-left"></i></a><a class="icon-btn danger" href="{% url 'prestamo_delete' prestamo.CodLibro_id prestamo.CodLector_id %}" title="Eliminar"><i class="bi bi-trash3"></i></a></div></td></tr>{% empty %}<tr><td colspan="5"><div class="empty-state"><i class="bi bi-journal-check"></i><strong>No hay préstamos para este filtro</strong><span>Cuando existan registros aparecerán aquí.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

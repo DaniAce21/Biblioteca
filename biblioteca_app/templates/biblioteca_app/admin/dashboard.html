@@ -1,0 +1,9 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Panel de administrador{% endblock %}
+{% block page_heading %}Panel de administración{% endblock %}
+{% block content %}<section class="page-hero"><div><div class="eyebrow">ADMINISTRACIÓN</div><h1>Panel de administrador</h1><p>El panel principal se encuentra disponible en Inicio.</p></div><a href="{% url 'inicio' %}" class="btn-ui btn-red"><i class="bi bi-grid-1x2-fill"></i> Ir al dashboard</a></section>{% endblock %}

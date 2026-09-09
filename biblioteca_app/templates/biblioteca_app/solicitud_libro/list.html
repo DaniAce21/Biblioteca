@@ -1,0 +1,132 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Administra el flujo completo de solicitud y adquisición de libros.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Solicitudes de libros · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Solicitudes de incorporación{% endblock %}
+{% block content %}
+<section class="page-hero">
+    <div>
+        <div class="eyebrow">SOLICITUDES DE LIBROS</div>
+        <h1>Solicitudes de incorporación</h1>
+        <p>Gestiona los libros que los lectores solicitan incorporar a la biblioteca.</p>
+    </div>
+</section>
+
+<div class="toolbar">
+    <div class="toolbar-left">
+        <a class="btn-ui {% if not filtro_actual %}btn-red{% else %}btn-dark{% endif %}" href="{% url 'solicitud_libro_list' %}">Todas</a>
+        <a class="btn-ui {% if filtro_actual == 'PENDIENTE' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=PENDIENTE">Pendientes</a>
+        <a class="btn-ui {% if filtro_actual == 'EN_ADQUISICION' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=EN_ADQUISICION">En adquisición</a>
+        <a class="btn-ui {% if filtro_actual == 'ADQUIRIDA' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=ADQUIRIDA">Adquiridas</a>
+        <a class="btn-ui {% if filtro_actual == 'RECHAZADA' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=RECHAZADA">Rechazadas</a>
+    </div>
+</div>
+
+<section class="data-card">
+    <div class="table-wrap">
+        <table class="ui-table">
+            <thead>
+                <tr>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Editorial</th>
+                    <th>Lector</th>
+                    <th>Estado</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                {% for solicitud in solicitudes %}
+                    <tr>
+                        <td>
+                            <strong>{{ solicitud.Titulo }}</strong>
+                        </td>
+
+                        <td>{{ solicitud.Autor|default:'—' }}</td>
+
+                        <td>{{ solicitud.Editorial|default:'—' }}</td>
+
+                        <td>
+                            {{ solicitud.CodLector.Nombres }}
+                            {{ solicitud.CodLector.ApellidoP }}
+                        </td>
+
+                        <td>
+                            {% if solicitud.Estado == 'PENDIENTE' %}
+                                <span class="pill pill-yellow">Pendiente</span>
+                            {% elif solicitud.Estado == 'EN_ADQUISICION' %}
+                                <span class="pill pill-yellow">En adquisición</span>
+                            {% elif solicitud.Estado == 'ADQUIRIDA' %}
+                                <span class="pill pill-green">Adquirida</span>
+                            {% else %}
+                                <span class="pill pill-red">Rechazada</span>
+                            {% endif %}
+                        </td>
+
+                        <td>
+                            <div class="table-actions">
+                                {% if solicitud.Estado == 'PENDIENTE' %}
+                                    <!--
+                                        Aprueba la gestión de compra/adquisición.
+                                        Todavía no incorpora el libro al catálogo.
+                                    -->
+                                    <form method="post" action="{% url 'solicitud_libro_aprobar' solicitud.CodSolicitud %}">
+                                        {% csrf_token %}
+                                        <button class="icon-btn" type="submit" title="Aprobar adquisición">
+                                            <i class="bi bi-cart-check"></i>
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="{% url 'solicitud_libro_rechazar' solicitud.CodSolicitud %}">
+                                        {% csrf_token %}
+                                        <button class="icon-btn danger" type="submit" title="Rechazar solicitud">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                {% elif solicitud.Estado == 'EN_ADQUISICION' %}
+                                    <!--
+                                        Confirma que el libro ya llegó y crea la relación
+                                        definitiva con el catálogo local.
+                                    -->
+                                    <form method="post" action="{% url 'solicitud_libro_adquirir' solicitud.CodSolicitud %}">
+                                        {% csrf_token %}
+                                        <button class="icon-btn" type="submit" title="Marcar como adquirido">
+                                            <i class="bi bi-box-seam"></i>
+                                        </button>
+                                    </form>
+
+                                    <form method="post" action="{% url 'solicitud_libro_rechazar' solicitud.CodSolicitud %}">
+                                        {% csrf_token %}
+                                        <button class="icon-btn danger" type="submit" title="Rechazar solicitud">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+                                    </form>
+                                {% elif solicitud.Estado == 'ADQUIRIDA' %}
+                                    <span title="Libro incorporado al catálogo">
+                                        <i class="bi bi-check-circle-fill"></i>
+                                    </span>
+                                {% endif %}
+                            </div>
+                        </td>
+                    </tr>
+
+                {% empty %}
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="bi bi-inbox"></i>
+                                <strong>No hay solicitudes</strong>
+                                <span>No existen solicitudes para este filtro.</span>
+                            </div>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

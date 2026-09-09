@@ -1,0 +1,50 @@
+<!--
+    Verificación del segundo factor durante el inicio de sesión.
+-->
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verificación 2FA · Sistema de Biblioteca</title>
+    <link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-auth-2fa.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="two-factor-page">
+    <main class="two-factor-card two-factor-verify-card">
+        <div class="two-factor-icon"><i class="bi bi-shield-check"></i></div>
+        <span class="two-factor-eyebrow">SEGUNDO FACTOR</span>
+        <h1>Verifica tu identidad</h1>
+        <p class="two-factor-intro">
+            Introduce el código de 6 dígitos generado por tu aplicación autenticadora para continuar.
+        </p>
+
+        {% if form.non_field_errors %}
+            <div class="two-factor-error">{{ form.non_field_errors }}</div>
+        {% endif %}
+
+        <form method="post" novalidate>
+            {% csrf_token %}
+            <div class="two-factor-field">
+                <label for="{{ form.code.id_for_label }}">{{ form.code.label }}</label>
+                {{ form.code }}
+                {% for error in form.code.errors %}
+                    <div class="two-factor-error">{{ error }}</div>
+                {% endfor %}
+            </div>
+
+            <button type="submit" class="two-factor-submit">
+                <i class="bi bi-box-arrow-in-right"></i>
+                Verificar y entrar
+            </button>
+        </form>
+
+        <a href="{% url 'login' %}" class="two-factor-back-link">
+            Volver al inicio de sesión
+        </a>
+    </main>
+</div>
+</body>
+</html>

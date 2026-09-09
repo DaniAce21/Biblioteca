@@ -1,0 +1,13 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Solicitudes · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Solicitudes de préstamo{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">SOLICITUDES</div><h1>Solicitudes de préstamo</h1><p>Revisa, aprueba o rechaza las solicitudes realizadas por los lectores.</p></div></section>
+<div class="toolbar"><div class="toolbar-left"><a class="btn-ui {% if not filtro_actual %}btn-red{% else %}btn-dark{% endif %}" href="{% url 'solicitud_prestamo_list' %}">Todas</a><a class="btn-ui {% if filtro_actual == 'PENDIENTE' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=PENDIENTE">Pendientes</a><a class="btn-ui {% if filtro_actual == 'APROBADA' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=APROBADA">Aprobadas</a><a class="btn-ui {% if filtro_actual == 'RECHAZADA' %}btn-red{% else %}btn-dark{% endif %}" href="?estado=RECHAZADA">Rechazadas</a></div></div>
+<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">BANDEJA</span><h2>Solicitudes registradas</h2></div></div>{% for solicitud in solicitudes %}<div class="request-row"><div class="request-main"><strong>{{ solicitud.CodLibro.Titulo }}</strong><span>Solicitud #{{ solicitud.CodSolicitud }}</span></div><div class="request-main"><strong>{{ solicitud.CodLector.Nombres }} {{ solicitud.CodLector.ApellidoP }}</strong><span>Lector</span></div><div class="request-note">Solicitada<br>{{ solicitud.FechaSolicitud|date:'d/m/Y H:i' }}</div><div>{% if solicitud.Estado == 'PENDIENTE' %}<span class="pill pill-yellow">Pendiente</span>{% elif solicitud.Estado == 'APROBADA' %}<span class="pill pill-green">Aprobada</span>{% else %}<span class="pill pill-red">Rechazada</span>{% endif %}</div><div class="request-actions">{% if solicitud.Estado == 'PENDIENTE' %}<form method="post" action="{% url 'solicitud_prestamo_aprobar' solicitud.CodSolicitud %}">{% csrf_token %}<button class="btn-ui btn-green" type="submit"><i class="bi bi-check-lg"></i> Aceptar</button></form><form method="post" action="{% url 'solicitud_prestamo_rechazar' solicitud.CodSolicitud %}">{% csrf_token %}<button class="btn-ui btn-danger-soft" type="submit"><i class="bi bi-x-lg"></i> Rechazar</button></form>{% endif %}</div></div>{% empty %}<div class="empty-state"><i class="bi bi-inbox"></i><strong>No hay solicitudes</strong><span>No existen solicitudes para el filtro seleccionado.</span></div>{% endfor %}</section>
+{% endblock %}

@@ -1,0 +1,113 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crear cuenta · Sistema de Biblioteca</title>
+    <link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-auth-registro.css' %}">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+</head>
+<body>
+<div class="register-page">
+    <main class="register-card">
+
+        <div class="register-header">
+            <a href="{% url 'login' %}" class="register-brand">
+                <span class="register-brand-icon"><i class="bi bi-book-half"></i></span>
+                <span class="register-brand-text">Sistema de Biblioteca</span>
+            </a>
+
+            <div class="register-progress" aria-label="Progreso del registro">
+                {% for number in '123' %}
+                    <span class="register-step {% if step >= forloop.counter %}is-active{% endif %}">
+                        {{ forloop.counter }}
+                    </span>
+                    {% if not forloop.last %}<span class="register-progress-line {% if step > forloop.counter %}is-active{% endif %}"></span>{% endif %}
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="register-grid">
+            <section class="register-intro">
+                <span class="register-eyebrow">CREAR CUENTA</span>
+                <h1>Crea tu cuenta de biblioteca</h1>
+                <p>Completa cada paso. Tus datos se guardan temporalmente hasta finalizar el registro.</p>
+
+                <div class="register-trust">
+                    <i class="bi bi-shield-check"></i>
+                    <div>
+                        <strong>Proceso seguro</strong>
+                        <span>Tu contraseña se almacena mediante la autenticación segura de Django.</span>
+                    </div>
+                </div>
+            </section>
+
+            <section class="register-form-card">
+                <div class="register-step-label">PASO {{ step }} DE {{ total_steps }}</div>
+
+                {% if form.non_field_errors %}
+                    <div class="register-alert">
+                        {{ form.non_field_errors }}
+                    </div>
+                {% endif %}
+
+                {% if step == 1 %}
+                    <h2>¿Cómo te llamas?</h2>
+                    <p class="register-step-description">Ingresa tus datos personales y de contacto para crear tu perfil de lector.</p>
+                {% if step == 1 %}
+                    <p class="register-step-description register-contact-note">El teléfono y la dirección se utilizarán para mantener actualizada tu información de contacto.</p>
+                {% endif %}
+                {% elif step == 2 %}
+                    <h2>Configura tu cuenta</h2>
+                    <p class="register-step-description">Indica los datos que utilizarás para acceder al sistema.</p>
+                {% else %}
+                    <h2>Crea una contraseña</h2>
+                    <p class="register-step-description">Usa una combinación segura de letras, números y símbolos.</p>
+                {% endif %}
+
+                <form method="post" novalidate>
+                    {% csrf_token %}
+                    <input type="hidden" name="step" value="{{ step }}">
+
+                    {% for field in form %}
+                        <div class="register-field">
+                            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                            {{ field }}
+                            {% for error in field.errors %}
+                                <div class="register-error">{{ error }}</div>
+                            {% endfor %}
+                        </div>
+                    {% endfor %}
+
+                    <div class="register-actions">
+                        {% if step == 1 %}
+                            <a href="{% url 'login' %}" class="register-back-link">Iniciar sesión</a>
+                        {% else %}
+                            <button type="submit" name="action" value="back" class="register-back-button">
+                                <i class="bi bi-arrow-left"></i>
+                                Atrás
+                            </button>
+                        {% endif %}
+
+                        <button type="submit" name="action" value="next" class="register-next-button">
+                            {% if step == 3 %}
+                                Crear cuenta
+                            {% else %}
+                                Continuar
+                                <i class="bi bi-arrow-right"></i>
+                            {% endif %}
+                        </button>
+                    </div>
+                </form>
+            </section>
+        </div>
+    </main>
+</div>
+</body>
+</html>

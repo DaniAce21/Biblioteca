@@ -1,0 +1,338 @@
+/*
+    Estilos de la vista exclusiva "Solicita tu libro".
+    La interfaz mantiene la identidad oscura del sistema y reserva el rojo
+    para las acciones principales.
+*/
+
+.request-hero,
+.request-search-card,
+.request-history-card {
+    background: #151517;
+    border: 1px solid #2e2e33;
+    border-radius: 16px;
+}
+
+.request-hero {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    padding: 30px;
+    margin-bottom: 22px;
+}
+
+.request-hero-copy {
+    min-width: 0;
+}
+
+.request-hero-copy h1 {
+    margin: 8px 0 10px;
+    color: #f2f2f2;
+    font-size: clamp(27px, 3vw, 38px);
+    line-height: 1.15;
+    font-weight: 800;
+}
+
+.request-hero-copy p {
+    margin: 0;
+    max-width: 780px;
+    color: #9b9ba1;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+.request-hero-icon {
+    width: 72px;
+    height: 72px;
+    flex: 0 0 72px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #3a3a40;
+    border-radius: 16px;
+    color: #e0263e;
+    font-size: 31px;
+}
+
+.request-search-card,
+.request-history-card {
+    padding: 24px;
+    margin-bottom: 22px;
+}
+
+.request-search-header h2,
+.request-history-header h2 {
+    margin: 5px 0 6px;
+    color: #f2f2f2;
+    font-size: 20px;
+}
+
+.request-search-header p {
+    margin: 0;
+    color: #8e8e94;
+    font-size: 13px;
+}
+
+.request-search-form {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.request-search-input-wrap {
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 14px;
+    min-height: 48px;
+    background: #0e0e10;
+    border: 1px solid #333338;
+    border-radius: 10px;
+}
+
+.request-search-input-wrap i {
+    color: #77777d;
+    flex: 0 0 auto;
+}
+
+.request-search-input-wrap input {
+    width: 100%;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: #f2f2f2;
+    font-size: 14px;
+}
+
+.request-search-input-wrap:focus-within {
+    border-color: #e0263e;
+}
+
+.request-status {
+    min-height: 20px;
+    margin-top: 12px;
+    color: #94949a;
+    font-size: 13px;
+}
+
+.open-library-results {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 14px;
+    margin-top: 12px;
+}
+
+.open-library-card {
+    display: grid;
+    grid-template-columns: 96px minmax(0, 1fr);
+    gap: 16px;
+    min-width: 0;
+    padding: 16px;
+    background: #101012;
+    border: 1px solid #2f2f34;
+    border-radius: 13px;
+}
+
+.open-library-cover {
+    width: 96px;
+    height: 140px;
+    overflow: hidden;
+    border-radius: 8px;
+    background: #1a1a1e;
+}
+
+.open-library-cover img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.open-library-cover-empty {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #66666d;
+    font-size: 26px;
+}
+
+.open-library-copy {
+    min-width: 0;
+}
+
+.open-library-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 4px 8px;
+    border: 1px solid #343439;
+    border-radius: 999px;
+    color: #8c8c92;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: .5px;
+}
+
+.open-library-copy h3 {
+    margin: 8px 0 9px;
+    color: #f2f2f2;
+    font-size: 16px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.open-library-copy p {
+    margin: 3px 0;
+    color: #909096;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.open-library-copy p strong {
+    color: #c5c5ca;
+}
+
+.open-library-request {
+    margin-top: 12px;
+}
+
+.open-library-local-state {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    margin-top: 12px;
+    color: #82c79d;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.request-history-list {
+    margin-top: 15px;
+}
+
+.request-history-item {
+    display: grid;
+    grid-template-columns: 34px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 0;
+    border-top: 1px solid #2a2a2f;
+}
+
+.request-history-icon {
+    width: 34px;
+    height: 34px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #3a3a40;
+    border-radius: 10px;
+    color: #e0263e;
+}
+
+.request-history-copy {
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.request-history-copy strong {
+    color: #ededf0;
+    font-size: 14px;
+    line-height: 1.35;
+    overflow-wrap: anywhere;
+}
+
+.request-history-copy span {
+    color: #85858b;
+    font-size: 12px;
+    line-height: 1.4;
+}
+
+.request-state {
+    padding: 5px 9px;
+    border: 1px solid #35353a;
+    border-radius: 999px;
+    color: #b3b3b9;
+    font-size: 10px;
+    font-weight: 700;
+    text-align: center;
+}
+
+.request-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    min-height: 160px;
+    text-align: center;
+    color: #77777e;
+}
+
+.request-empty i {
+    margin-bottom: 4px;
+    color: #55555b;
+    font-size: 28px;
+}
+
+.request-empty strong {
+    color: #c4c4c8;
+    font-size: 14px;
+}
+
+.request-empty span {
+    font-size: 12px;
+}
+
+@media (max-width: 900px) {
+    .open-library-results {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 620px) {
+    .request-hero {
+        align-items: flex-start;
+        padding: 22px;
+    }
+
+    .request-hero-icon {
+        display: none;
+    }
+
+    .request-search-card,
+    .request-history-card {
+        padding: 18px;
+    }
+
+    .request-search-form {
+        grid-template-columns: 1fr;
+    }
+
+    .request-search-form .btn-ui {
+        width: 100%;
+    }
+
+    .open-library-card {
+        grid-template-columns: 82px minmax(0, 1fr);
+    }
+
+    .open-library-cover {
+        width: 82px;
+        height: 122px;
+    }
+
+    .request-history-item {
+        grid-template-columns: 34px minmax(0, 1fr);
+    }
+
+    .request-state {
+        grid-column: 2;
+        justify-self: start;
+    }
+}

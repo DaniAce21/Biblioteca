@@ -1,0 +1,55 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ================================================================
+   ESTILOS DE LA PLANTILLA: biblioteca_app/prestamo/devolver.html
+   ================================================================ */
+
+/* ---------------- BLOQUE DE ESTILOS 1 ---------------- */
+.return-page { max-width: 850px; margin: 35px auto; }
+    .return-card {
+        background: #fff;
+        border-radius: 18px;
+        box-shadow: 0 10px 30px rgba(0,0,0,.10);
+        overflow: hidden;
+        border: 1px solid #e8e8e8;
+    }
+    .return-header {
+        background: #000;
+        color: #fff;
+        padding: 26px 30px;
+        border-left: 6px solid #E30513;
+    }
+    .return-header h1 { margin: 0 0 6px; font-size: 25px; }
+    .return-header p { margin: 0; opacity: .82; }
+    .return-body { padding: 30px; }
+    .loan-info {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+        gap: 16px;
+        margin-bottom: 25px;
+    }
+    .info-box {
+        background: #f7f7f7;
+        border-radius: 12px;
+        padding: 17px;
+        border-left: 4px solid #E30513;
+    }
+    .info-box span { display:block; color:#666; font-size:13px; margin-bottom:5px; }
+    .info-box strong { font-size:16px; color:#111; }
+    .status {
+        border-radius: 12px;
+        padding: 18px;
+        margin-bottom: 25px;
+        font-weight: 600;
+    }
+    .status.ok { background:#e9f7ef; color:#18733b; border:1px solid #bde5cc; }
+    .status.late { background:#fff4cc; color:#856404; border:1px solid #ffe08a; }
+    .actions { display:flex; gap:12px; flex-wrap:wrap; }
+    .btn { display:inline-block; padding:12px 18px; border-radius:9px; text-decoration:none; border:0; cursor:pointer; font-weight:700; }
+    .btn-danger { background:#E30513; color:#fff; }
+    .btn-secondary { background:#000; color:#fff; }
+    @media (max-width:650px) { .loan-info { grid-template-columns:1fr; } .return-body { padding:20px; } }
+

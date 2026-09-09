@@ -1,0 +1,13 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Lectores · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Lectores{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">LECTORES</div><h1>Lectores registrados</h1><p>Gestiona usuarios lectores y revisa su situación.</p></div><a href="{% url 'lector_create' %}" class="btn-ui btn-red"><i class="bi bi-person-plus"></i> Nuevo lector</a></section>
+<div class="toolbar"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#lectorTable" placeholder="Buscar por nombre..."></div></div>
+<section class="data-card"><div class="table-wrap"><table class="ui-table" id="lectorTable"><thead><tr><th>ID</th><th>Nombre</th><th>Préstamos activos</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>{% for lector in lectores %}<tr data-search="{{ lector.Nombres|lower }} {{ lector.ApellidoP|lower }} {{ lector.ApellidoM|lower }}"><td>{{ lector.CodLector }}</td><td><strong>{{ lector.ApellidoP }} {{ lector.ApellidoM }}, {{ lector.Nombres }}</strong></td><td>{{ lector.prestamos.count }}</td><td>{% if lector.prestamos.count %}<span class="pill pill-green">Activo</span>{% else %}<span class="pill pill-gray">Sin préstamos</span>{% endif %}</td><td><div class="table-actions"><a class="icon-btn" href="{% url 'lector_update' lector.CodLector %}"><i class="bi bi-pencil"></i></a><a class="icon-btn danger" href="{% url 'lector_delete' lector.CodLector %}"><i class="bi bi-trash3"></i></a></div></td></tr>{% empty %}<tr><td colspan="5"><div class="empty-state"><i class="bi bi-people"></i><strong>No hay lectores</strong><span>Registra el primer lector.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

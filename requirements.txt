@@ -1,0 +1,4 @@
+Django>=6.0,<7.0
+requests>=2.32,<3.0
+pyotp>=2.9,<3.0
+qrcode[pil]>=8.0,<9.0

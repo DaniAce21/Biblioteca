@@ -1,0 +1,31 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Mi panel · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Panel del lector{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">MI BIBLIOTECA</div><h1>Hola, {{ lector.Nombres }}</h1><p>Consulta tus préstamos, historial y la información de tu cuenta.</p></div><div class="hero-meta"><span>Perfil</span><strong>Lector</strong></div></section>
+<!-- Las tarjetas resumen funcionan como accesos directos a las vistas relacionadas. -->
+<div class="stats-grid">
+    <a class="stat-card stat-card-link" href="{% url 'mis_prestamos' %}">
+        <div class="stat-label">Préstamos activos</div>
+        <div class="stat-number">{{ cantidad_prestamos }}</div>
+        <div class="stat-description">Ver mis préstamos actualmente registrados</div>
+    </a>
+    <a class="stat-card stat-card-link" href="{% url 'mis_prestamos' %}">
+        <div class="stat-label">Próxima devolución</div>
+        <div class="stat-number">{% if prestamos %}{{ prestamos.0.FechaDev|date:'d/m' }}{% else %}—{% endif %}</div>
+        <div class="stat-description">Consultar detalles de la próxima devolución</div>
+    </a>
+    <a class="stat-card stat-card-link" href="{% url 'mis_datos' %}">
+        <div class="stat-label">Cuenta</div>
+        <div class="stat-number"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="stat-description">Abrir y actualizar mi perfil</div>
+    </a>
+</div>
+<section class="quick-section"><div class="section-heading"><div><span class="section-eyebrow">ACCESOS RÁPIDOS</span><h2>¿Qué quieres hacer?</h2></div></div><div class="quick-grid"><a class="quick-card" href="{% url 'libros_lector' %}"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-book"></i></span><div><strong>Explorar catálogo</strong><small>Buscar libros disponibles</small></div></div><i class="bi bi-chevron-right"></i></a><a class="quick-card" href="{% url 'mis_prestamos' %}"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-journal-check"></i></span><div><strong>Mis préstamos</strong><small>Revisar devoluciones</small></div></div><i class="bi bi-chevron-right"></i></a><a class="quick-card" href="{% url 'historial_lector' %}"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-clock-history"></i></span><div><strong>Historial</strong><small>Consultar devoluciones</small></div></div><i class="bi bi-chevron-right"></i></a></div></section>
+<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">RESUMEN</span><h2>Préstamos actuales</h2></div></div><div class="table-wrap"><table class="ui-table"><thead><tr><th>Libro</th><th>Fecha de devolución</th><th>Estado</th></tr></thead><tbody>{% for prestamo in prestamos %}<tr><td><strong>{{ prestamo.CodLibro.Titulo }}</strong></td><td>{{ prestamo.FechaDev|date:'d/m/Y' }}</td><td>{% if prestamo.FechaDev < today %}<span class="pill pill-red">Atrasado</span>{% else %}<span class="pill pill-green">Vigente</span>{% endif %}</td></tr>{% empty %}<tr><td colspan="3"><div class="empty-state"><i class="bi bi-journal"></i><strong>No tienes préstamos activos</strong><span>Explora el catálogo para solicitar un libro.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

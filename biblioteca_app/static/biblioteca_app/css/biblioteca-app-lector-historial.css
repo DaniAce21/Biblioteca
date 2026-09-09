@@ -1,0 +1,25 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ================================================================
+   ESTILOS DE LA PLANTILLA: biblioteca_app/lector/historial.html
+   ================================================================ */
+
+/* ---------------- BLOQUE DE ESTILOS 1 ---------------- */
+.reader-page { max-width: 1100px; margin: 0 auto; padding: 20px 0 45px; }
+    .reader-hero { background: #111; color: white; border-left: 5px solid #e30513; border-radius: 14px; padding: 28px; margin-bottom: 22px; }
+    .reader-hero h1 { color: white; margin: 0 0 7px; }
+    .reader-hero p { color: #c9cdd3; margin: 0; }
+    .reader-card { background: white; border: 1px solid #e5e7eb; border-radius: 14px; padding: 24px; box-shadow: 0 4px 16px rgba(0,0,0,.06); }
+    .reader-card h2 { margin-top: 0; color: #17233c; }
+    .table-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; }
+    th { background: #17233c; color: white; padding: 13px; text-align: left; font-size: 13px; }
+    td { padding: 13px; border-bottom: 1px solid #eee; color: #444; }
+    .ok, .late { display: inline-block; padding: 6px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+    .ok { background: #e8f5e9; color: #176b2c; }
+    .late { background: #fdeaea; color: #a52222; }
+    .empty { text-align: center; padding: 40px 15px; color: #6b7280; }
+

@@ -1,0 +1,13 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Editoriales · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Editoriales{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">EDITORIALES</div><h1>Editoriales registradas</h1><p>Administra las editoriales asociadas al catálogo.</p></div><a href="{% url 'editorial_create' %}" class="btn-ui btn-red"><i class="bi bi-plus-lg"></i> Nueva editorial</a></section>
+<div class="toolbar"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#editorialTable" placeholder="Buscar editorial..."></div></div>
+<section class="data-card"><div class="table-wrap"><table class="ui-table" id="editorialTable"><thead><tr><th>ID</th><th>Editorial</th><th>Libros</th><th>Acciones</th></tr></thead><tbody>{% for editorial in editoriales %}<tr data-search="{{ editorial.NombreEditorial|lower }}"><td>{{ editorial.CodEditorial }}</td><td><strong>{{ editorial.NombreEditorial }}</strong></td><td><span class="pill pill-gray">{{ editorial.libro_editoriales.all|length }} libros</span></td><td><div class="table-actions"><a class="icon-btn" href="{% url 'editorial_update' editorial.CodEditorial %}"><i class="bi bi-pencil"></i></a><a class="icon-btn danger" href="{% url 'editorial_delete' editorial.CodEditorial %}"><i class="bi bi-trash3"></i></a></div></td></tr>{% empty %}<tr><td colspan="4"><div class="empty-state"><i class="bi bi-building"></i><strong>No hay editoriales</strong><span>Crea la primera editorial.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

@@ -1,0 +1,80 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Nuevo libro · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Nuevo libro{% endblock %}
+{% block content %}
+<section class="page-hero">
+    <div>
+        <div class="eyebrow">CATÁLOGO</div>
+        <h1>Registrar nuevo libro</h1>
+        <p>Busca el título en Open Library y selecciónalo para incorporarlo automáticamente.</p>
+    </div>
+</section>
+
+<div class="form-layout">
+    <section class="form-card">
+        <div class="eyebrow">OPEN LIBRARY</div>
+        <h2>Buscar libro</h2>
+        <p>La búsqueda obtiene título, autores, editorial y portada cuando están disponibles.</p>
+        {% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+        <form method="get">
+            <div class="field">
+                <label for="id_q">Título, autor o palabra clave</label>
+                <input id="id_q" name="q" value="{{ query|default:'' }}" placeholder="Ej.: Cien años de soledad">
+            </div>
+            <div class="form-actions">
+                <a href="{% url 'libro_dashboard' %}" class="btn-ui btn-dark">Cancelar</a>
+                <button class="btn-ui btn-red" type="submit"><i class="bi bi-search"></i> Buscar</button>
+            </div>
+        </form>
+    </section>
+</div>
+
+{% if resultados %}
+<section class="data-card narrow-wide-card">
+    <div class="data-card-header">
+        <div>
+            <span class="section-eyebrow">RESULTADOS</span>
+            <h2>Libros encontrados</h2>
+            <p>Selecciona uno para registrarlo en el catálogo.</p>
+        </div>
+    </div>
+    <div class="table-wrap">
+        <table class="ui-table">
+            <thead>
+                <tr>
+                    <th>Portada</th>
+                    <th>Título</th>
+                    <th>Autor</th>
+                    <th>Editorial</th>
+                    <th>Año</th>
+                    <th>Acción</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for resultado in resultados %}
+                <tr>
+                    <td>{% if resultado.cover %}<span class="pill pill-green">Disponible</span>{% else %}<span class="pill pill-gray">Sin portada</span>{% endif %}</td>
+                    <td><strong>{{ resultado.title }}</strong></td>
+                    <td>{{ resultado.authors.0|default:'—' }}</td>
+                    <td>{{ resultado.publishers.0|default:'—' }}</td>
+                    <td>{{ resultado.year|default:'—' }}</td>
+                    <td>
+                        <form method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="result_index" value="{{ forloop.counter0 }}">
+                            <button class="btn-ui btn-red" type="submit"><i class="bi bi-plus-lg"></i> Registrar</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

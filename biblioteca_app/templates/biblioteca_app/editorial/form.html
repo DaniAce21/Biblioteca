@@ -1,0 +1,16 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}{{ titulo }} · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}{{ titulo }}{% endblock %}
+{% block content %}
+<div class="form-layout"><section class="form-card"><div class="eyebrow">FORMULARIO</div><h2>{{ titulo }}</h2><p>Completa los datos y guarda los cambios.</p>
+{% if error %}<div class="alert alert-danger">{{ error }}</div>{% endif %}
+{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
+<form method="post">{% csrf_token %}<div class="form-grid">{% for field in form %}<div class="field {% if field.field.widget.attrs.class == 'full' %}full{% endif %}"><label for="{{ field.id_for_label }}">{{ field.label }}</label>{{ field }}{% if field.help_text %}<span class="helptext">{{ field.help_text }}</span>{% endif %}{% for error in field.errors %}<div class="errorlist">{{ error }}</div>{% endfor %}</div>{% endfor %}</div><div class="form-actions"><a href="javascript:history.back()" class="btn-ui btn-dark">Cancelar</a><button class="btn-ui btn-red" type="submit"><i class="bi bi-check-lg"></i> Guardar</button></div></form></section></div>
+{% if resultados %}<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">OPEN LIBRARY</span><h2>Resultados encontrados</h2><p>Selecciona un resultado para continuar.</p></div></div><div class="table-wrap"><table class="ui-table"><thead><tr><th>Título</th><th>Autor</th><th>Acción</th></tr></thead><tbody>{% for resultado in resultados %}<tr><td><strong>{{ resultado.title }}</strong></td><td>{{ resultado.authors.0|default:'—' }}</td><td><form method="post"><input type="hidden" name="result_index" value="{{ forloop.counter0 }}">{% csrf_token %}<button class="btn-ui btn-red" type="submit">Seleccionar</button></form></td></tr>{% endfor %}</tbody></table></div></section>{% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,16 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Editoriales · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Editoriales{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">EDITORIALES</div><h1>Editoriales</h1><p>Administra editorials y consulta sus registros asociados.</p></div><a href="{% url 'editorial_create' %}" class="btn-ui btn-red"><i class="bi bi-plus-lg"></i> Nuevo editorial</a></section>
+<div class="toolbar"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#entityTable" placeholder="Buscar editorial..."></div><div class="toolbar-right"><a href="{% url 'editorial_list' %}" class="btn-ui btn-dark">Ver listado</a></div></div>
+<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">REGISTROS</span><h2>Editoriales registrados</h2></div></div><div class="card-grid">{% for editorial in editoriales %}
+<a class="entity-card" href="{% url 'editorial_list' %}"><div class="entity-top"><div class="entity-avatar"><i class="bi bi-building"></i></div><div><div class="entity-name">{{ editorial.NombreEditorial }}</div><div class="entity-meta">Código {{ editorial.CodEditorial }}</div></div></div><div class="entity-count"><span>Libros registrados</span><strong>{{ editorial.libro_editoriales.all|length }}</strong></div><span class="btn-ui btn-dark">Ver catálogo <i class="bi bi-arrow-right"></i></span></a>
+{% empty %}<div class="empty-state"><i class="bi bi-building"></i><strong>No hay registros</strong><span>Agrega el primer registro desde el botón superior.</span></div>{% endfor %}
+<a class="entity-card add-card" href="{% url 'editorial_create' %}"><div><i class="bi bi-plus-circle"></i><strong>Agregar editorial</strong><span>Nuevo registro en el sistema</span></div></a></div></section>
+{% endblock %}

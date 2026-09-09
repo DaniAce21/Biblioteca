@@ -1,0 +1,118 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ================================================================
+   ESTILOS DE LA PLANTILLA: biblioteca_app/lector/libros.html
+   ================================================================ */
+
+/* ---------------- BLOQUE DE ESTILOS 1 ---------------- */
+.catalog-page { max-width:1200px; margin:0 auto; padding:10px 0 45px; }
+    .catalog-hero { background:#111; color:#fff; border-left:5px solid #E30513; border-radius:14px; padding:28px; margin-bottom:20px; }
+    .catalog-hero h1 { color:#fff; margin:0 0 7px; font-size:30px; }
+    .catalog-hero p { color:#c8c8c8; margin:0; }
+    .search-box { background:#fff; border:1px solid #e5e7eb; border-radius:14px; padding:20px; margin-bottom:24px; box-shadow:0 4px 15px rgba(0,0,0,.05); }
+    .search-box label { display:block; font-weight:700; color:#111; margin-bottom:8px; }
+    .search-row { display:flex; gap:10px; }
+    .search-row input { flex:1; border:1px solid #d7d7d7; border-radius:8px; padding:12px 14px; font-size:14px; outline:none; }
+    .search-row input:focus { border-color:#E30513; box-shadow:0 0 0 3px rgba(227,5,19,.08); }
+    .btn { border:0; border-radius:8px; padding:11px 16px; font-weight:700; cursor:pointer; text-decoration:none; font-size:13px; display:inline-block; text-align:center; }
+    .btn-red { background:#E30513; color:#fff; }
+    .btn-black { background:#111; color:#fff; }
+    .btn-gray { background:#ededed; color:#111; }
+    .section-title { display:flex; justify-content:space-between; align-items:end; gap:15px; margin:25px 0 15px; }
+    .section-title h2 { margin:0; font-size:21px; color:#111; }
+    .section-title p { margin:0; color:#777; font-size:13px; }
+    .messages { margin-bottom:18px; }
+    .message { background:#fff; border:1px solid #e5e7eb; border-left:4px solid #E30513; border-radius:9px; padding:12px 15px; margin-bottom:9px; color:#111; font-weight:600; }
+    .books-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:18px; }
+    .book-card { background:#fff; border:1px solid #e5e7eb; border-radius:13px; overflow:hidden; box-shadow:0 4px 15px rgba(0,0,0,.05); display:flex; flex-direction:column; min-width:0; }
+    .cover-wrap { height:270px; background:#ededed; display:flex; justify-content:center; align-items:center; overflow:hidden; }
+    .cover { width:100%; height:100%; object-fit:cover; }
+    .cover-empty { color:#777; text-align:center; font-size:13px; padding:20px; }
+    .book-body { padding:17px; display:flex; flex-direction:column; flex:1; }
+    .book-code { font-size:10px; font-weight:800; color:#fff; background:#111; border-radius:20px; padding:4px 8px; align-self:flex-start; margin-bottom:10px; }
+    .book-body h3 { color:#111; font-size:17px; line-height:1.35; margin:0 0 9px; }
+    .authors { color:#666; font-size:12px; line-height:1.45; min-height:34px; margin-bottom:15px; }
+    .book-action { margin-top:auto; }
+    .book-action .btn { width:100%; box-sizing:border-box; }
+    .status { border-radius:8px; padding:10px; text-align:center; font-size:12px; font-weight:700; }
+    .status.active { background:#111; color:#fff; }
+    .status.pending { background:#f2f2f2; color:#111; border:1px solid #ddd; }
+    .external-panel { background:#f7f7f7; border:1px solid #dedede; border-left:5px solid #E30513; border-radius:14px; padding:20px; margin-top:30px; }
+    .external-panel h2 { margin:0 0 6px; color:#111; }
+    .external-panel > p { margin:0 0 18px; color:#666; font-size:13px; }
+    .external-results { display:grid; gap:12px; }
+    .external-card { background:#fff; border:1px solid #e4e4e4; border-radius:11px; padding:14px; display:flex; gap:15px; align-items:center; }
+    .external-cover, .external-empty { width:70px; height:100px; object-fit:cover; border-radius:5px; flex:none; background:#eee; }
+    .external-empty { display:flex; align-items:center; justify-content:center; font-size:25px; }
+    .external-info { flex:1; min-width:0; }
+    .external-info h3 { margin:0 0 6px; color:#111; font-size:17px; }
+    .external-info p { margin:3px 0; color:#666; font-size:12px; }
+    .external-action { flex:none; }
+    .empty { background:#fff; border:1px solid #e5e7eb; border-radius:13px; padding:40px; text-align:center; color:#666; }
+    @media(max-width:1000px){ .books-grid{grid-template-columns:repeat(3,1fr)} }
+    @media(max-width:760px){ .books-grid{grid-template-columns:repeat(2,1fr)} .external-card{align-items:flex-start; flex-wrap:wrap}.external-action{width:100%}.external-action .btn{width:100%} }
+    @media(max-width:520px){ .search-row{flex-direction:column}.books-grid{grid-template-columns:1fr}.cover-wrap{height:330px} }
+
+
+
+/* ================================================================
+   ACCESO DESTACADO A "SOLICITA TU LIBRO"
+   ================================================================ */
+.not-found-book-card {
+    display: grid;
+    grid-template-columns: 50px minmax(0, 1fr) auto;
+    align-items: center;
+    gap: 16px;
+    margin: 28px 0;
+    padding: 20px;
+    background: #151517;
+    border: 1px solid #2e2e33;
+    border-radius: 14px;
+}
+
+.not-found-book-icon {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #3a3a40;
+    border-radius: 12px;
+    color: #e0263e;
+    font-size: 21px;
+}
+
+.not-found-book-copy {
+    min-width: 0;
+}
+
+.not-found-book-copy h2 {
+    margin: 5px 0 5px;
+    color: #f2f2f2;
+    font-size: 18px;
+}
+
+.not-found-book-copy p {
+    margin: 0;
+    color: #8f8f95;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.not-found-book-button {
+    white-space: nowrap;
+}
+
+@media (max-width: 700px) {
+    .not-found-book-card {
+        grid-template-columns: 44px minmax(0, 1fr);
+    }
+
+    .not-found-book-button {
+        grid-column: 1 / -1;
+        width: 100%;
+    }
+}

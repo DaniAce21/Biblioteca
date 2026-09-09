@@ -1,0 +1,834 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ================================================================
+   ESTILOS DE LA PLANTILLA: biblioteca_app/auth/login.html
+   ================================================================ */
+
+/* ---------------- BLOQUE DE ESTILOS 1 ---------------- */
+/* =========================================================
+           CONFIGURACIÓN GENERAL
+        ========================================================== */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100%;
+        }
+
+
+        body {
+
+            min-height: 100vh;
+
+            font-family:
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background: #111111;
+
+            color: #222222;
+
+            /*
+                Evita que el texto normal de la página
+                se comporte como texto editable.
+            */
+            user-select: none;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+        }
+
+
+        /*
+            Los campos del formulario sí permiten escribir
+            y seleccionar texto.
+        */
+
+        input,
+        textarea,
+        select,
+        button {
+
+            user-select: auto;
+            -webkit-user-select: auto;
+            -moz-user-select: auto;
+            -ms-user-select: auto;
+        }
+
+
+        /* =========================================================
+           CONTENEDOR PRINCIPAL
+        ========================================================== */
+
+        .login-page {
+
+            width: 100%;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: stretch;
+
+            justify-content: center;
+
+            background: #111111;
+        }
+
+
+        /* =========================================================
+           PANEL IZQUIERDO
+           FONDO DE BIBLIOTECA
+        ========================================================== */
+
+        .login-welcome {
+
+            position: relative;
+
+            width: 50%;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 60px;
+
+            overflow: hidden;
+
+            /*
+                Fondo fotográfico de biblioteca
+                con una capa oscura para mantener
+                la identidad visual.
+            */
+
+            background-image:
+
+                linear-gradient(
+                    rgba(0, 0, 0, 0.70),
+                    rgba(0, 0, 0, 0.86)
+                ),
+
+                url("https://images.unsplash.com/photo-1521587760476-6c12a4b040da?auto=format&fit=crop&w=1800&q=90");
+
+            background-size: cover;
+
+            background-position: center;
+
+            background-repeat: no-repeat;
+
+            color: #ffffff;
+        }
+
+
+        /*
+            Capa adicional para dar profundidad.
+        */
+
+        .login-welcome::before {
+
+            content: "";
+
+            position: absolute;
+
+            inset: 0;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    rgba(0, 0, 0, 0.20),
+                    rgba(227, 5, 19, 0.06),
+                    rgba(0, 0, 0, 0.30)
+                );
+
+            pointer-events: none;
+        }
+
+
+        /*
+            Decoración circular superior.
+        */
+
+        .login-welcome::after {
+
+            content: "";
+
+            position: absolute;
+
+            width: 430px;
+
+            height: 430px;
+
+            right: -190px;
+
+            top: -150px;
+
+            border: 1px solid
+                rgba(227, 5, 19, 0.35);
+
+            border-radius: 50%;
+
+            pointer-events: none;
+        }
+
+
+        /* =========================================================
+           CONTENIDO DE BIENVENIDA
+        ========================================================== */
+
+        .welcome-content {
+
+            position: relative;
+
+            z-index: 2;
+
+            width: 100%;
+
+            max-width: 520px;
+        }
+
+
+        /* =========================================================
+           MARCA
+        ========================================================== */
+
+        .welcome-brand {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 65px;
+        }
+
+
+        .welcome-brand-line {
+
+            width: 5px;
+
+            height: 42px;
+
+            background: #E30513;
+
+            border-radius: 5px;
+
+            flex-shrink: 0;
+        }
+
+
+        .welcome-brand-text {
+
+            font-size: 16px;
+
+            font-weight: 800;
+
+            letter-spacing: 0.4px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================================
+           TEXTO SUPERIOR
+        ========================================================== */
+
+        .welcome-eyebrow {
+
+            margin-bottom: 16px;
+
+            color: #E30513;
+
+            font-size: 12px;
+
+            font-weight: 800;
+
+            letter-spacing: 1.8px;
+
+            text-transform: uppercase;
+        }
+
+
+        /* =========================================================
+           TÍTULO
+        ========================================================== */
+
+        .welcome-title {
+
+            margin: 0;
+
+            max-width: 520px;
+
+            font-size: 48px;
+
+            line-height: 1.08;
+
+            font-weight: 800;
+
+            letter-spacing: -1px;
+        }
+
+
+        .welcome-title span {
+
+            color: #E30513;
+        }
+
+
+        /* =========================================================
+           DESCRIPCIÓN
+        ========================================================== */
+
+        .welcome-description {
+
+            max-width: 470px;
+
+            margin: 24px 0 0;
+
+            color: #dddddd;
+
+            font-size: 16px;
+
+            line-height: 1.7;
+        }
+
+
+        /* =========================================================
+           LÍNEA ROJA
+        ========================================================== */
+
+        .welcome-divider {
+
+            width: 60px;
+
+            height: 4px;
+
+            margin-top: 35px;
+
+            background: #E30513;
+
+            border-radius: 4px;
+        }
+
+
+        /* =========================================================
+           PIE DEL PANEL
+        ========================================================== */
+
+        .welcome-footer {
+
+            margin-top: 80px;
+
+            color: #a5a5a5;
+
+            font-size: 11px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =========================================================
+           PANEL DERECHO
+        ========================================================== */
+
+        .login-form-side {
+
+            width: 50%;
+
+            min-height: 100vh;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            padding: 50px;
+
+            background: #ffffff;
+        }
+
+
+        .login-container {
+
+            width: 100%;
+
+            max-width: 430px;
+        }
+
+
+        /* =========================================================
+           ENCABEZADO LOGIN
+        ========================================================== */
+
+        .login-header {
+
+            margin-bottom: 35px;
+        }
+
+
+        .login-header h1 {
+
+            margin: 0 0 9px;
+
+            color: #111111;
+
+            font-size: 30px;
+
+            font-weight: 800;
+        }
+
+
+        .login-header p {
+
+            margin: 0;
+
+            color: #777777;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           ERRORES GENERALES
+        ========================================================== */
+
+        .auth-error-box {
+
+            margin-bottom: 22px;
+
+            padding: 13px 15px;
+
+            border-left: 3px solid #E30513;
+
+            border-radius: 5px;
+
+            background: #fff1f2;
+
+            color: #b0000b;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        .auth-error-box ul {
+
+            margin: 0;
+
+            padding-left: 18px;
+        }
+
+
+        /* =========================================================
+           CAMPOS
+        ========================================================== */
+
+        .auth-field {
+
+            margin-bottom: 20px;
+        }
+
+
+        .auth-label {
+
+            display: block;
+
+            margin-bottom: 8px;
+
+            color: #222222;
+
+            font-size: 14px;
+
+            font-weight: 700;
+
+            cursor: default;
+        }
+
+
+        .auth-input {
+
+            display: block;
+
+            width: 100%;
+
+            padding: 13px 16px;
+
+            border: 1px solid #d5d5d5;
+
+            border-radius: 7px;
+
+            background: #ffffff;
+
+            color: #222222;
+
+            font-size: 15px;
+
+            outline: none;
+
+            /*
+                Aquí sí permitimos el cursor de escritura.
+            */
+
+            user-select: text;
+
+            -webkit-user-select: text;
+
+            cursor: text;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .auth-input::placeholder {
+
+            color: #999999;
+        }
+
+
+        .auth-input:focus {
+
+            border-color: #E30513;
+
+            box-shadow:
+                0 0 0 3px
+                rgba(227, 5, 19, 0.12);
+        }
+
+
+        /* =========================================================
+           ERRORES DE CAMPOS
+        ========================================================== */
+
+        .auth-error {
+
+            margin-top: 6px;
+
+            color: #E30513;
+
+            font-size: 12px;
+
+            line-height: 1.4;
+        }
+
+
+        .auth-error ul {
+
+            margin: 0;
+
+            padding: 0;
+
+            list-style: none;
+        }
+
+
+        /* =========================================================
+           RECORDAR SESIÓN
+        ========================================================== */
+
+        .remember-container {
+
+            margin-top: -2px;
+
+            margin-bottom: 18px;
+
+            color: #666666;
+
+            font-size: 13px;
+        }
+
+
+        .remember-container label {
+
+            display: flex;
+
+            align-items: center;
+
+            gap: 8px;
+
+            cursor: pointer;
+        }
+
+
+        .remember-container .form-check-input {
+
+            width: 16px;
+
+            height: 16px;
+
+            margin: 0;
+
+            cursor: pointer;
+
+            accent-color: #E30513;
+        }
+
+
+        /* =========================================================
+           OLVIDÉ MI CONTRASEÑA
+        ========================================================== */
+
+        .login-forgot {
+
+            margin-top: 12px;
+
+            margin-bottom: 25px;
+
+            text-align: right;
+        }
+
+
+        .login-forgot .auth-link {
+
+            color: #E30513;
+
+            text-decoration: none;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .login-forgot .auth-link:hover {
+
+            color: #B90410;
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           BOTÓN
+        ========================================================== */
+
+        .auth-button {
+
+            width: 100%;
+
+            padding: 14px 20px;
+
+            border: none;
+
+            border-radius: 7px;
+
+            background: #E30513;
+
+            color: #ffffff;
+
+            font-size: 15px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background-color 0.2s ease,
+                transform 0.15s ease,
+                box-shadow 0.2s ease;
+        }
+
+
+        .auth-button:hover {
+
+            background: #B90410;
+
+            box-shadow:
+                0 5px 15px
+                rgba(227, 5, 19, 0.20);
+        }
+
+
+        .auth-button:active {
+
+            transform: translateY(1px);
+        }
+
+
+        /* =========================================================
+           REGISTRO
+        ========================================================== */
+
+        .register-login {
+
+            margin-top: 25px;
+
+            padding-top: 23px;
+
+            border-top: 1px solid #e5e5e5;
+
+            text-align: center;
+
+            color: #777777;
+
+            font-size: 13px;
+        }
+
+
+        .register-login .auth-link {
+
+            margin-left: 4px;
+
+            color: #E30513;
+
+            text-decoration: none;
+
+            font-weight: 700;
+
+            cursor: pointer;
+        }
+
+
+        .register-login .auth-link:hover {
+
+            text-decoration: underline;
+        }
+
+
+        /* =========================================================
+           INFORMACIÓN DE SEGURIDAD
+        ========================================================== */
+
+        .security-note {
+
+            margin-top: 25px;
+
+            padding: 12px 14px;
+
+            border-radius: 6px;
+
+            background: #f6f6f6;
+
+            color: #777777;
+
+            text-align: center;
+
+            font-size: 10px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================================================
+           RESPONSIVE
+        ========================================================== */
+
+        @media (max-width: 950px) {
+
+            .login-page {
+
+                flex-direction: column;
+
+                background: #ffffff;
+            }
+
+
+            .login-welcome {
+
+                width: 100%;
+
+                min-height: 430px;
+
+                padding: 40px 35px;
+            }
+
+
+            .welcome-brand {
+
+                margin-bottom: 40px;
+            }
+
+
+            .welcome-title {
+
+                font-size: 38px;
+            }
+
+
+            .welcome-footer {
+
+                margin-top: 40px;
+            }
+
+
+            .login-form-side {
+
+                width: 100%;
+
+                min-height: auto;
+
+                padding: 45px 35px 55px;
+            }
+        }
+
+
+        @media (max-width: 600px) {
+
+            .login-welcome {
+
+                min-height: 390px;
+
+                padding: 32px 25px;
+            }
+
+
+            .welcome-brand {
+
+                margin-bottom: 35px;
+            }
+
+
+            .welcome-brand-text {
+
+                font-size: 13px;
+            }
+
+
+            .welcome-title {
+
+                font-size: 34px;
+
+                letter-spacing: -0.5px;
+            }
+
+
+            .welcome-description {
+
+                font-size: 14px;
+            }
+
+
+            .login-form-side {
+
+                padding: 35px 25px 45px;
+            }
+
+
+            .login-header h1 {
+
+                font-size: 27px;
+            }
+        }
+

@@ -1,0 +1,6 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}{% block title %}Registrar devolución · Sistema de Biblioteca{% endblock %}{% block page_heading %}Registrar devolución{% endblock %}{% block content %}<div class="confirm-card"><div class="confirm-icon"><i class="bi bi-arrow-return-left"></i></div><h1>Registrar devolución</h1><p>Libro: <strong>{{ prestamo.CodLibro.Titulo }}</strong><br>Lector: <strong>{{ prestamo.CodLector.Nombres }} {{ prestamo.CodLector.ApellidoP }}</strong><br>Fecha de devolución registrada: <strong>{{ hoy|date:'d/m/Y' }}</strong><br>Días de atraso: <strong>{{ dias_atraso }}</strong></p><form method="post">{% csrf_token %}<div class="confirm-actions"><a href="{% url 'prestamo_list' %}" class="btn-ui btn-dark">Cancelar</a><button class="btn-ui btn-green" type="submit"><i class="bi bi-check-lg"></i> Confirmar devolución</button></div></form></div>{% endblock %}

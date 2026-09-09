@@ -1,0 +1,13 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Autores · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Autores{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">AUTORES</div><h1>Autores registrados</h1><p>Administra autores asociados al catálogo.</p></div><a href="{% url 'autor_create' %}" class="btn-ui btn-red"><i class="bi bi-plus-lg"></i> Nuevo autor</a></section>
+<div class="toolbar"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#autorTable" placeholder="Buscar autor..."></div></div>
+<section class="data-card"><div class="table-wrap"><table class="ui-table" id="autorTable"><thead><tr><th>ID</th><th>Autor</th><th>Libros</th><th>Acciones</th></tr></thead><tbody>{% for autor in autores %}<tr data-search="{{ autor.NombreAutor|lower }}"><td>{{ autor.CodAutor }}</td><td><strong>{{ autor.NombreAutor }}</strong></td><td><span class="pill pill-gray">{{ autor.libro_autores.all|length }} libros</span></td><td><div class="table-actions"><a class="icon-btn" href="{% url 'autor_update' autor.CodAutor %}"><i class="bi bi-pencil"></i></a><a class="icon-btn danger" href="{% url 'autor_delete' autor.CodAutor %}"><i class="bi bi-trash3"></i></a></div></td></tr>{% empty %}<tr><td colspan="4"><div class="empty-state"><i class="bi bi-person-vcard"></i><strong>No hay autores</strong><span>Crea el primer autor.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

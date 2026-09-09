@@ -1,0 +1,84 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Permite consultar el catálogo y solicitar libros que todavía no existen.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Catálogo · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Catálogo{% endblock %}
+{% block content %}
+<section class="page-hero">
+    <div>
+        <div class="eyebrow">BIBLIOTECA</div>
+        <h1>Catálogo</h1>
+        <p>Explora los libros disponibles y solicita un préstamo.</p>
+    </div>
+</section>
+
+<!-- ============================================================
+     BUSCADOR DEL CATÁLOGO
+     ============================================================ -->
+<div class="toolbar">
+    <div class="search-box">
+        <i class="bi bi-search"></i>
+        <input data-table-filter="#catalogGrid" placeholder="Buscar por título...">
+    </div>
+</div>
+
+<!-- ============================================================
+     CATÁLOGO LOCAL
+     ============================================================ -->
+<div class="catalog-grid" id="catalogGrid">
+    {% for libro in libros %}
+        <article class="book-card" data-search="{{ libro.Titulo|lower }}">
+            <div class="book-cover">
+                {% if libro.PortadaURL %}
+                    <img src="{{ libro.PortadaURL }}" alt="Portada de {{ libro.Titulo }}" loading="lazy">
+                {% else %}
+                    <i class="bi bi-book"></i>
+                {% endif %}
+            </div>
+
+            <div class="book-body">
+                <div class="book-title">{{ libro.Titulo }}</div>
+                <div class="book-meta">Código {{ libro.CodLibro }}</div>
+
+                <div class="card-actions">
+                    <form method="post" action="{% url 'pedir_prestamo' libro.CodLibro %}">
+                        {% csrf_token %}
+                        <button class="btn-ui btn-red" type="submit">
+                            <i class="bi bi-journal-plus"></i>
+                            Solicitar préstamo
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </article>
+    {% empty %}
+        <div class="empty-state">
+            <i class="bi bi-book"></i>
+            <strong>No hay libros en el catálogo</strong>
+            <span>Vuelve a intentarlo más tarde.</span>
+        </div>
+    {% endfor %}
+</div>
+
+<!-- ============================================================
+     ACCESO A LA VISTA EXCLUSIVA DE SOLICITUD
+     ============================================================ -->
+<section class="not-found-book-card">
+    <div class="not-found-book-icon">
+        <i class="bi bi-search"></i>
+    </div>
+    <div class="not-found-book-copy">
+        <span class="eyebrow">¿NO ENCUENTRAS TU LIBRO?</span>
+        <h2>Solicita un libro para que la biblioteca lo evalúe</h2>
+        <p>Busca el título en Open Library, revisa su carátula y envía la solicitud desde una vista dedicada.</p>
+    </div>
+    <a class="btn-ui btn-red not-found-book-button" href="{% url 'solicitar_libro' %}">
+        <i class="bi bi-arrow-right-circle"></i>
+        Solicitar libro
+    </a>
+</section>
+
+{% endblock %}

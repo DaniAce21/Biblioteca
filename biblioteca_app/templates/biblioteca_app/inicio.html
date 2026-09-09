@@ -1,0 +1,30 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Inicio · Sistema de Biblioteca{% endblock %}
+{% block page_eyebrow %}Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Panel de administración{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">PANEL DE ADMINISTRACIÓN</div><h1>Bienvenido, administrador</h1><p>Supervisa el catálogo, los lectores y la operación diaria desde un solo lugar.</p></div><div class="hero-meta"><span>Estado del sistema</span><strong><i class="bi bi-circle-fill"></i> Operativo</strong></div></section>
+<section class="stats-grid">
+{% for label,count,icon,desc in stats %}<article class="stat-card"><div class="stat-top"><span class="stat-icon"><i class="bi {{ icon }}"></i></span><span class="stat-mini-label">BIBLIOTECA</span></div><div class="stat-label">{{ label }}</div><div class="stat-number">{{ count }}</div><div class="stat-description">{{ desc }}</div></article>{% endfor %}
+</section>
+<div class="activity-grid">
+  <section class="activity-card"><div class="data-card-header"><div><span class="section-eyebrow">MOVIMIENTO</span><h2>Actividad reciente</h2></div><a href="{% url 'prestamo_list' %}" class="btn-ui btn-dark">Ver préstamos <i class="bi bi-arrow-right"></i></a></div>
+  {% for item in actividades %}<div class="activity-row"><div class="activity-icon"><i class="bi {{ item.icon }}"></i></div><div class="activity-copy"><strong>{{ item.text }}</strong><span>{{ item.when }}</span></div></div>{% empty %}<div class="empty-state"><i class="bi bi-inbox"></i><strong>Sin actividad reciente</strong><span>Las nuevas operaciones aparecerán aquí.</span></div>{% endfor %}</section>
+  <section class="notice-card"><div class="data-card-header"><div><span class="section-eyebrow">ACCESOS RÁPIDOS</span><h2>Acciones frecuentes</h2></div></div><div class="quick-grid">
+    <a href="{% url 'libro_create' %}" class="quick-card"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-plus-lg"></i></span><div><strong>Nuevo libro</strong><small>Agregar al catálogo</small></div></div><i class="bi bi-chevron-right"></i></a>
+    <a href="{% url 'autor_create' %}" class="quick-card"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-person-plus-fill"></i></span><div><strong>Nuevo autor</strong><small>Registrar autor</small></div></div><i class="bi bi-chevron-right"></i></a>
+    <a href="{% url 'editorial_create' %}" class="quick-card"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-building-add"></i></span><div><strong>Nueva editorial</strong><small>Registrar editorial</small></div></div><i class="bi bi-chevron-right"></i></a>
+    <a href="{% url 'lector_create' %}" class="quick-card"><div class="quick-card-left"><span class="quick-card-icon"><i class="bi bi-person-plus"></i></span><div><strong>Nuevo lector</strong><small>Registrar lector</small></div></div><i class="bi bi-chevron-right"></i></a>
+  </div></section>
+</div>
+<section><div class="section-heading"><div><span class="section-eyebrow">GESTIÓN</span><h2>Módulos principales</h2></div><p>Acceso directo a los catálogos y procesos.</p></div><div class="dashboard-grid">
+<a class="module-card" href="{% url 'libro_dashboard' %}"><div><div class="module-icon"><i class="bi bi-book"></i></div><h3>Libros</h3><p>Gestiona el catálogo, consulta títulos y registra nuevos ejemplares.</p></div><div><span class="btn-ui btn-red">Abrir módulo <i class="bi bi-arrow-right"></i></span></div></a>
+<a class="module-card" href="{% url 'autor_dashboard' %}"><div><div class="module-icon"><i class="bi bi-person-vcard"></i></div><h3>Autores</h3><p>Administra autores y consulta los libros vinculados a cada uno.</p></div><div><span class="btn-ui btn-dark">Abrir módulo <i class="bi bi-arrow-right"></i></span></div></a>
+<a class="module-card" href="{% url 'editorial_dashboard' %}"><div><div class="module-icon"><i class="bi bi-building"></i></div><h3>Editoriales</h3><p>Gestiona las editoriales y sus catálogos asociados.</p></div><div><span class="btn-ui btn-dark">Abrir módulo <i class="bi bi-arrow-right"></i></span></div></a>
+</div></section>
+{% endblock %}

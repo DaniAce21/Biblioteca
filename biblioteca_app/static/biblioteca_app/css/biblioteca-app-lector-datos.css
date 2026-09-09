@@ -1,0 +1,6 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+.profile-layout{max-width:1050px;margin:0 auto;display:grid;grid-template-columns:1fr 1fr;gap:16px}.profile-readonly-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.profile-item{padding:13px;border:1px solid var(--border-soft);border-radius:8px;background:#111114}.profile-item span{display:block;color:#76777d;font-size:9px;margin-bottom:5px}.profile-item strong{display:block;color:#f2f2f2;font-size:11px;line-height:1.35;word-break:break-word}.field-error{margin-top:5px;color:#ff6b7c;font-size:9px}@media(max-width:900px){.profile-layout{grid-template-columns:1fr}}@media(max-width:620px){.profile-readonly-grid{grid-template-columns:1fr}}

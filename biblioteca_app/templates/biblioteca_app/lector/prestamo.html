@@ -1,0 +1,12 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Mis préstamos · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Mis préstamos{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">LECTOR</div><h1>Mis préstamos</h1><p>Consulta tus préstamos activos y sus fechas de devolución.</p></div></section>
+<section class="data-card"><div class="table-wrap"><table class="ui-table"><thead><tr><th>Libro</th><th>Devolución</th><th>Estado</th><th>Acciones</th></tr></thead><tbody>{% for prestamo in prestamos %}<tr><td><strong>{{ prestamo.CodLibro.Titulo }}</strong></td><td>{{ prestamo.FechaDev|date:'d/m/Y' }}</td><td><span class="pill pill-green">Vigente</span></td><td><a class="icon-btn danger" href="{% url 'mi_prestamo_delete' prestamo.CodLibro_id prestamo.CodLector_id %}" data-confirm="¿Cancelar este préstamo?"><i class="bi bi-x-lg"></i></a></td></tr>{% empty %}<tr><td colspan="4"><div class="empty-state"><i class="bi bi-journal"></i><strong>No tienes préstamos activos</strong><span>No hay registros para mostrar.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}

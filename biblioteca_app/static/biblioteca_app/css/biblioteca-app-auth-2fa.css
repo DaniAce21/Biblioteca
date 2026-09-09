@@ -1,0 +1,237 @@
+/*
+    Estilos de las pantallas de autenticación de dos factores.
+    La estructura visual mantiene la paleta oscura del Sistema de Biblioteca.
+*/
+
+/* Fondo general de la pantalla 2FA. */
+* {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    min-height: 100%;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    min-height: 100vh;
+    font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #0b0b0d;
+    color: #f2f2f2;
+}
+
+/* Contenedor principal centrado y responsive. */
+.two-factor-page {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 18px;
+}
+
+/* Tarjeta principal donde se explica y confirma el segundo factor. */
+.two-factor-card {
+    width: min(100%, 720px);
+    background: #151517;
+    border: 1px solid #2b2b30;
+    border-radius: 12px;
+    padding: 34px;
+}
+
+.two-factor-verify-card {
+    width: min(100%, 500px);
+}
+
+.two-factor-icon {
+    width: 48px;
+    height: 48px;
+    display: grid;
+    place-items: center;
+    margin-bottom: 18px;
+    border-radius: 10px;
+    background: #e0263e;
+    color: #ffffff;
+    font-size: 22px;
+}
+
+.two-factor-eyebrow {
+    display: block;
+    margin-bottom: 8px;
+    color: #e0263e;
+    font-size: 12px;
+    font-weight: 800;
+    letter-spacing: .12em;
+}
+
+.two-factor-card h1 {
+    margin: 0 0 10px;
+    font-size: 28px;
+    line-height: 1.2;
+}
+
+.two-factor-intro {
+    margin: 0 0 28px;
+    color: #9a9a9f;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+/* Cada paso combina el número con su contenido. */
+.two-factor-step {
+    display: grid;
+    grid-template-columns: 36px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+    margin-top: 24px;
+}
+
+.two-factor-step-number {
+    width: 36px;
+    height: 36px;
+    display: grid;
+    place-items: center;
+    border-radius: 50%;
+    background: #222227;
+    color: #f2f2f2;
+    font-weight: 800;
+}
+
+.two-factor-step h2 {
+    margin: 2px 0 6px;
+    font-size: 18px;
+}
+
+.two-factor-step p {
+    margin: 0;
+    color: #9a9a9f;
+    font-size: 13px;
+    line-height: 1.55;
+}
+
+.two-factor-qr-wrap {
+    width: fit-content;
+    margin: 18px auto 0;
+    padding: 14px;
+    border-radius: 10px;
+    background: #ffffff;
+}
+
+.two-factor-qr-wrap img {
+    display: block;
+    width: 220px;
+    height: 220px;
+}
+
+/* Clave alternativa para introducir el secreto manualmente. */
+.two-factor-manual {
+    margin-top: 22px;
+    padding: 14px;
+    border: 1px solid #2b2b30;
+    border-radius: 8px;
+    background: #111114;
+}
+
+.two-factor-manual strong {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 13px;
+}
+
+.two-factor-manual code {
+    display: block;
+    color: #e0263e;
+    font-size: 13px;
+    letter-spacing: .08em;
+    overflow-wrap: anywhere;
+}
+
+.two-factor-form-content {
+    min-width: 0;
+}
+
+/* Campo para el código TOTP. */
+.two-factor-field {
+    margin-top: 18px;
+}
+
+.two-factor-field label {
+    display: block;
+    margin-bottom: 8px;
+    color: #d8d8dc;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.two-factor-field input {
+    width: 100%;
+    height: 52px;
+    padding: 0 14px;
+    border: 1px solid #2b2b30;
+    border-radius: 8px;
+    background: #111114;
+    color: #ffffff;
+    font-size: 20px;
+    text-align: center;
+    letter-spacing: .28em;
+}
+
+.two-factor-field input:focus {
+    outline: none;
+    border-color: #e0263e;
+}
+
+.two-factor-submit {
+    width: 100%;
+    min-height: 50px;
+    margin-top: 18px;
+    border: 0;
+    border-radius: 8px;
+    background: #e0263e;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 800;
+    cursor: pointer;
+}
+
+.two-factor-submit:hover {
+    background: #b91c32;
+}
+
+.two-factor-submit i {
+    margin-right: 7px;
+}
+
+.two-factor-error {
+    margin-top: 7px;
+    color: #ff7385;
+    font-size: 12px;
+}
+
+.two-factor-back-link {
+    display: block;
+    margin-top: 18px;
+    color: #9a9a9f;
+    font-size: 13px;
+    text-align: center;
+}
+
+.two-factor-back-link:hover {
+    color: #e0263e;
+}
+
+@media (max-width: 640px) {
+    .two-factor-card {
+        padding: 24px 18px;
+    }
+
+    .two-factor-card h1 {
+        font-size: 24px;
+    }
+
+    .two-factor-qr-wrap img {
+        width: 190px;
+        height: 190px;
+    }
+}

@@ -1,0 +1,145 @@
+{% extends 'biblioteca_app/base.html' %}
+
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+
+    IMPORTANTE:
+    La etiqueta de herencia "extends" debe ser la primera etiqueta del archivo
+    para que Django pueda heredar correctamente la plantilla base.
+
+    El resto de los comentarios y bloques explican la función de cada sección.
+-->
+
+{% load static %}
+
+<!-- Define el título que aparecerá en la pestaña del navegador. -->
+{% block title %}Mis datos · Sistema de Biblioteca{% endblock %}
+
+<!-- Define el encabezado principal que utiliza la plantilla base. -->
+{% block page_heading %}Mis datos{% endblock %}
+
+<!-- Carga exclusivamente la hoja de estilos correspondiente a esta vista. -->
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-lector-datos.css' %}">
+{% endblock %}
+
+<!-- ================================================================
+     CONTENIDO PRINCIPAL DE LA VISTA "MIS DATOS"
+     ================================================================ -->
+{% block content %}
+
+<!-- Encabezado visual de la sección de datos personales. -->
+<section class="page-hero">
+    <div>
+        <div class="eyebrow">CUENTA</div>
+        <h1>Mis datos</h1>
+        <p>
+            Consulta tu información y actualiza tus datos de contacto cuando lo necesites.
+        </p>
+    </div>
+</section>
+
+<!-- Distribuye las tarjetas de información personal y datos editables. -->
+<div class="profile-layout">
+
+    <!-- ============================================================
+         TARJETA DE INFORMACIÓN PERSONAL
+         Estos datos se muestran solamente para consulta.
+         ============================================================ -->
+    <section class="form-card">
+        <div class="data-card-header">
+            <div>
+                <span class="section-eyebrow">INFORMACIÓN PERSONAL</span>
+                <h2>Datos de tu cuenta</h2>
+                <p>Los campos de contacto se pueden modificar.</p>
+            </div>
+        </div>
+
+        <!-- Rejilla con los datos que no se editan desde este formulario. -->
+        <div class="profile-readonly-grid">
+            <div class="profile-item">
+                <span>Nombres</span>
+                <strong>{{ lector.Nombres }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>Apellido paterno</span>
+                <strong>{{ lector.ApellidoP }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>Apellido materno</span>
+                <strong>{{ lector.ApellidoM }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>Usuario</span>
+                <strong>{{ usuario.username }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>Correo electrónico</span>
+                <strong>{{ usuario.email }}</strong>
+            </div>
+
+            <div class="profile-item">
+                <span>RUT</span>
+                <strong>{{ perfil.RUT }}</strong>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================================
+         TARJETA DE DATOS EDITABLES
+         Permite actualizar teléfono y dirección.
+         ============================================================ -->
+    <section class="form-card">
+        <div class="data-card-header">
+            <div>
+                <span class="section-eyebrow">DATOS EDITABLES</span>
+                <h2>Información de contacto</h2>
+                <p>Modifica tu teléfono o dirección y guarda los cambios.</p>
+            </div>
+        </div>
+
+        <!-- Muestra errores generales del formulario cuando existen. -->
+        {% if form.non_field_errors %}
+            <div class="alert alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+        {% endif %}
+
+        <!-- Formulario utilizado para actualizar los datos del lector. -->
+        <form method="post">
+            {% csrf_token %}
+
+            <!-- Recorre automáticamente todos los campos definidos en el formulario Django. -->
+            {% for field in form %}
+                <div class="field">
+                    <label for="{{ field.id_for_label }}">
+                        {{ field.label }}
+                    </label>
+
+                    {{ field }}
+
+                    <!-- Muestra los errores específicos del campo, si existen. -->
+                    {% for error in field.errors %}
+                        <div class="field-error">
+                            {{ error }}
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endfor %}
+
+            <!-- Botón encargado de enviar los cambios al servidor. -->
+            <div class="form-actions">
+                <button type="submit" class="btn-ui btn-red">
+                    <i class="bi bi-check2" aria-hidden="true"></i>
+                    Guardar cambios
+                </button>
+            </div>
+        </form>
+    </section>
+</div>
+
+{% endblock %}

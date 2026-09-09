@@ -1,0 +1,30 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ================================================================
+   ESTILOS DE LA PLANTILLA: biblioteca_app/solicitud_libro/list.html
+   ================================================================ */
+
+/* ---------------- BLOQUE DE ESTILOS 1 ---------------- */
+.requests-page { max-width: 1150px; margin: 0 auto; }
+    .hero { background:#111; color:#fff; border-left:5px solid #E30513; border-radius:14px; padding:28px; margin-bottom:22px; }
+    .hero h1 { margin:0 0 7px; color:#fff; }
+    .hero p { margin:0; color:#c9cdd3; }
+    .messages { margin-bottom:18px; }
+    .message { background:#fff; border:1px solid #e5e7eb; border-left:4px solid #E30513; border-radius:9px; padding:12px 15px; margin-bottom:9px; color:#111; font-weight:600; }
+    .request-card { background:#fff; border:1px solid #e5e7eb; border-radius:13px; padding:20px; margin-bottom:14px; display:flex; gap:18px; align-items:center; }
+    .cover, .cover-empty { width:78px; height:108px; object-fit:cover; border-radius:6px; flex:none; background:#eee; }
+    .cover-empty { display:flex; align-items:center; justify-content:center; font-size:27px; }
+    .info { flex:1; }
+    .info h2 { margin:0 0 7px; font-size:19px; }
+    .info p { margin:4px 0; color:#666; font-size:13px; }
+    .status { display:inline-block; padding:5px 9px; border-radius:20px; background:#111; color:#fff; font-size:11px; font-weight:700; margin-top:8px; }
+    .actions { display:flex; flex-direction:column; gap:8px; min-width:150px; }
+    .btn { border:0; border-radius:7px; padding:10px 13px; font-weight:700; cursor:pointer; text-decoration:none; text-align:center; font-size:13px; }
+    .approve { background:#111; color:#fff; }
+    .reject { background:#E30513; color:#fff; }
+    .empty { background:#fff; border:1px solid #e5e7eb; border-radius:13px; padding:40px; text-align:center; color:#666; }
+    @media(max-width:700px){ .request-card{align-items:flex-start; flex-wrap:wrap}.actions{width:100%;flex-direction:row}.actions .btn{flex:1} }
+

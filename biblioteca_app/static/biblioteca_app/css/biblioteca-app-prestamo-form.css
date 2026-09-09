@@ -1,0 +1,262 @@
+/*
+   Hoja de estilos del Sistema de Biblioteca.
+   Los comentarios indican las secciones visuales y sus responsabilidades.
+*/
+
+/* ============================================================
+   SISTEMA DE BIBLIOTECA
+   FORMULARIO DE PRÉSTAMOS
+   Corrección visual de campos Libro / Lector / Fecha
+   ============================================================ */
+
+:root {
+    --biblioteca-red: #E30513;
+    --biblioteca-red-dark: #B90410;
+    --biblioteca-black: #111111;
+    --biblioteca-panel: rgba(17, 17, 17, 0.92);
+    --biblioteca-border: rgba(255, 255, 255, 0.14);
+    --biblioteca-white: #ffffff;
+    --biblioteca-text-soft: #c9c9c9;
+}
+
+/* ============================================================
+   CONTENEDOR PRINCIPAL
+   ============================================================ */
+
+.prestamo-form-page {
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 24px 0 48px;
+}
+
+/* ============================================================
+   ENCABEZADO
+   ============================================================ */
+
+.prestamo-form-header {
+    margin-bottom: 22px;
+}
+
+.prestamo-form-header h1 {
+    margin: 0 0 6px;
+    color: var(--biblioteca-white);
+    font-size: clamp(28px, 4vw, 40px);
+    font-weight: 700;
+    line-height: 1.15;
+}
+
+.prestamo-form-header p {
+    margin: 0;
+    color: var(--biblioteca-text-soft);
+    font-size: 15px;
+}
+
+/* ============================================================
+   TARJETA DEL FORMULARIO
+   ============================================================ */
+
+.prestamo-form-card {
+    width: 100%;
+    padding: 26px;
+    background: var(--biblioteca-panel);
+    border: 1px solid var(--biblioteca-border);
+    border-radius: 16px;
+    box-shadow: 0 18px 45px rgba(0, 0, 0, 0.28);
+    backdrop-filter: blur(5px);
+}
+
+/* ============================================================
+   ETIQUETAS
+   ============================================================ */
+
+.prestamo-form-card label,
+.prestamo-form-card .form-label {
+    display: block;
+    margin-bottom: 8px;
+    color: var(--biblioteca-white);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* ============================================================
+   CAMPOS DE TEXTO, FECHA Y SELECT
+   ============================================================ */
+
+.prestamo-form-card input,
+.prestamo-form-card select,
+.prestamo-form-card textarea,
+.prestamo-form-card .form-control,
+.prestamo-form-card .form-select {
+    width: 100%;
+    min-height: 44px;
+    box-sizing: border-box;
+
+    padding: 10px 12px;
+
+    background-color: #1a1a1a;
+    color: var(--biblioteca-white);
+
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    border-radius: 9px;
+
+    font-family: inherit;
+    font-size: 15px;
+
+    outline: none;
+}
+
+/* ============================================================
+   SELECT CERRADO
+   ============================================================ */
+
+.prestamo-form-card select,
+.prestamo-form-card .form-select {
+    color: #ffffff !important;
+    background-color: #1a1a1a !important;
+    color-scheme: dark;
+}
+
+/* ============================================================
+   OPCIONES DEL SELECT
+   IMPORTANTE:
+   Fondo blanco + texto negro para que sean legibles.
+   ============================================================ */
+
+.prestamo-form-card select option,
+.prestamo-form-card .form-select option {
+    background-color: #ffffff !important;
+    color: #000000 !important;
+
+    font-family: inherit;
+    font-size: 15px;
+}
+
+/* Opción seleccionada cuando el navegador lo permite */
+.prestamo-form-card select option:checked,
+.prestamo-form-card .form-select option:checked {
+    background-color: var(--biblioteca-red) !important;
+    color: #ffffff !important;
+}
+
+/* ============================================================
+   PLACEHOLDER
+   ============================================================ */
+
+.prestamo-form-card input::placeholder,
+.prestamo-form-card textarea::placeholder {
+    color: #929292;
+    opacity: 1;
+}
+
+/* ============================================================
+   ESTADO FOCUS
+   ============================================================ */
+
+.prestamo-form-card input:focus,
+.prestamo-form-card select:focus,
+.prestamo-form-card textarea:focus,
+.prestamo-form-card .form-control:focus,
+.prestamo-form-card .form-select:focus {
+    background-color: #1a1a1a;
+    color: #ffffff;
+
+    border-color: var(--biblioteca-red);
+
+    box-shadow:
+        0 0 0 3px rgba(227, 5, 19, 0.18);
+
+    outline: none;
+}
+
+/* ============================================================
+   FECHA
+   ============================================================ */
+
+.prestamo-form-card input[type="date"] {
+    color: #ffffff;
+    color-scheme: dark;
+}
+
+.prestamo-form-card input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(1);
+    cursor: pointer;
+}
+
+/* ============================================================
+   ERRORES DE FORMULARIO
+   ============================================================ */
+
+.prestamo-form-card .errorlist {
+    margin: 6px 0 0;
+    padding-left: 18px;
+
+    color: #ff6670;
+    font-size: 13px;
+}
+
+/* ============================================================
+   ACCIONES
+   ============================================================ */
+
+.prestamo-form-actions {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
+    margin-top: 24px;
+}
+
+.prestamo-form-actions .btn,
+.prestamo-form-actions button {
+    min-height: 42px;
+    padding: 9px 18px;
+
+    border-radius: 9px;
+
+    font-size: 14px;
+    font-weight: 600;
+}
+
+/* Botón principal */
+.prestamo-form-actions .btn-primary,
+.prestamo-form-actions .btn-danger,
+.prestamo-form-actions .btn-guardar {
+    background: var(--biblioteca-red);
+    border-color: var(--biblioteca-red);
+    color: #ffffff;
+}
+
+.prestamo-form-actions .btn-primary:hover,
+.prestamo-form-actions .btn-danger:hover,
+.prestamo-form-actions .btn-guardar:hover {
+    background: var(--biblioteca-red-dark);
+    border-color: var(--biblioteca-red-dark);
+    color: #ffffff;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+    .prestamo-form-page {
+        padding: 18px 0 35px;
+    }
+
+    .prestamo-form-card {
+        padding: 20px;
+        border-radius: 13px;
+    }
+
+    .prestamo-form-actions {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .prestamo-form-actions .btn,
+    .prestamo-form-actions button {
+        width: 100%;
+    }
+}

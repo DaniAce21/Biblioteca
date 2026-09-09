@@ -1,0 +1,13 @@
+<!--
+    Plantilla HTML del Sistema de Biblioteca.
+    Los comentarios indican la función de las secciones principales.
+-->
+
+{% extends 'biblioteca_app/base.html' %}
+{% block title %}Catálogo · Sistema de Biblioteca{% endblock %}
+{% block page_heading %}Catálogo de libros{% endblock %}
+{% block content %}
+<section class="page-hero"><div><div class="eyebrow">LIBROS</div><h1>Catálogo</h1><p>Consulta, filtra y administra los libros registrados.</p></div><a href="{% url 'libro_create' %}" class="btn-ui btn-red"><i class="bi bi-plus-lg"></i> Nuevo libro</a></section>
+<div class="toolbar"><div class="toolbar-left"><div class="search-box"><i class="bi bi-search"></i><input data-table-filter="#libroTable" placeholder="Buscar por título..."></div></div><div class="toolbar-right"><a href="{% url 'libro_dashboard' %}" class="btn-ui btn-dark"><i class="bi bi-grid"></i> Dashboard</a></div></div>
+<section class="data-card"><div class="data-card-header"><div><span class="section-eyebrow">REGISTROS</span><h2>Libros registrados</h2><p>{{ libros|length }} resultados</p></div></div><div class="table-wrap"><table class="ui-table" id="libroTable"><thead><tr><th>ID</th><th>Título</th><th>Portada</th><th>Acciones</th></tr></thead><tbody>{% for libro in libros %}<tr data-search="{{ libro.Titulo|lower }}"><td>{{ libro.CodLibro }}</td><td><strong>{{ libro.Titulo }}</strong></td><td>{% if libro.PortadaURL %}<a href="{{ libro.PortadaURL }}" target="_blank" class="pill pill-gray">Ver portada</a>{% else %}<span class="pill pill-gray">Sin portada</span>{% endif %}</td><td><div class="table-actions"><a class="icon-btn" href="{% url 'libro_update' libro.CodLibro %}" title="Editar"><i class="bi bi-pencil"></i></a><a class="icon-btn danger" href="{% url 'libro_delete' libro.CodLibro %}" title="Eliminar"><i class="bi bi-trash3"></i></a></div></td></tr>{% empty %}<tr><td colspan="4"><div class="empty-state"><i class="bi bi-book"></i><strong>No hay libros registrados</strong><span>Agrega un nuevo libro desde el botón superior.</span></div></td></tr>{% endfor %}</tbody></table></div></section>
+{% endblock %}
