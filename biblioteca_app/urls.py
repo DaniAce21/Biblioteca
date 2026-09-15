@@ -424,4 +424,13 @@ urlpatterns = [
         views.solicitud_libro_rechazar,
         name="solicitud_libro_rechazar",
     ),
+
+    # ============================================================
+    # AUDITORÍA Y PERMISOS
+    # ============================================================
+
+    path("auditoria/", views.auditoria_list, name="auditoria_list"),
+    path("auditoria/<int:pk>/", views.auditoria_detalle, name="auditoria_detalle"),
+    path("auditoria/exportar/", views.auditoria_exportar, name="auditoria_exportar"),
+    path("auditoria/permisos/", views.auditoria_permisos, name="auditoria_permisos"),
 ]

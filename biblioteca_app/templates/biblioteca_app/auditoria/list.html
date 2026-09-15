@@ -1,0 +1,31 @@
+{% extends "biblioteca_app/base.html" %}
+{% load static %}
+{% block title %}Auditoría | Sistema de Biblioteca{% endblock %}
+{% block page_eyebrow %}Seguridad{% endblock %}
+{% block page_heading %}Auditoría del sistema{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-auditoria.css' %}">{% endblock %}
+{% block content %}
+<div class="audit-header">
+  <div><span class="audit-kicker">CONTROL Y TRAZABILIDAD</span><h1>Registro de actividad</h1><p>Consulta los eventos importantes y los cambios realizados en el sistema.</p></div>
+  <div class="audit-actions">{% if puede_gestionar %}<a class="audit-button secondary" href="{% url 'auditoria_permisos' %}"><i class="bi bi-shield-lock"></i> Gestionar permisos</a>{% endif %}{% if puede_exportar %}<a class="audit-button" href="{% url 'auditoria_exportar' %}?{{ request.GET.urlencode }}"><i class="bi bi-download"></i> Exportar CSV</a>{% endif %}</div>
+</div>
+<form method="get" class="audit-card filter-card">
+  <div class="filter-grid">
+    <label>Usuario<input type="text" name="usuario" value="{{ filtros.usuario }}" placeholder="Nombre de usuario"></label>
+    <label>Acción<select name="accion"><option value="">Todas</option>{% for value,label in acciones %}<option value="{{ value }}" {% if filtros.accion == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Tipo<select name="tipo"><option value="">Todos</option>{% for value,label in tipos %}<option value="{{ value }}" {% if filtros.tipo == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Nivel<select name="nivel"><option value="">Todos</option>{% for value,label in niveles %}<option value="{{ value }}" {% if filtros.nivel == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Resultado<select name="resultado"><option value="">Todos</option>{% for value,label in resultados %}<option value="{{ value }}" {% if filtros.resultado == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></label>
+    <label>Desde<input type="date" name="fecha_desde" value="{{ filtros.fecha_desde }}"></label>
+    <label>Hasta<input type="date" name="fecha_hasta" value="{{ filtros.fecha_hasta }}"></label>
+    <div class="filter-submit"><button class="audit-button" type="submit"><i class="bi bi-funnel"></i> Filtrar</button><a class="clear-link" href="{% url 'auditoria_list' %}">Limpiar</a></div>
+  </div>
+</form>
+<div class="audit-card table-card">
+  <div class="table-heading"><div><strong>Eventos registrados</strong><span>{{ page_obj.paginator.count }} resultado{{ page_obj.paginator.count|pluralize }}</span></div></div>
+  <div class="table-responsive"><table class="audit-table"><thead><tr><th>Fecha</th><th>Usuario</th><th>Evento</th><th>Tipo</th><th>Nivel</th><th>Resultado</th><th></th></tr></thead><tbody>
+  {% for log in logs %}<tr><td><strong>{{ log.fecha_hora|date:"d/m/Y" }}</strong><small>{{ log.fecha_hora|date:"H:i:s" }}</small></td><td>{{ log.usuario.username|default:"Sistema" }}</td><td><strong>{{ log.get_accion_display }}</strong><small>{{ log.descripcion|truncatechars:75 }}</small></td><td>{{ log.get_tipo_display }}</td><td><span class="level level-{{ log.nivel|lower }}">{{ log.get_nivel_display }}</span></td><td><span class="result result-{{ log.resultado|lower }}">{{ log.get_resultado_display }}</span></td><td>{% if puede_detalle %}<a class="detail-link" href="{% url 'auditoria_detalle' log.pk %}">Ver <i class="bi bi-arrow-right"></i></a>{% endif %}</td></tr>{% empty %}<tr><td colspan="7" class="empty-row">No hay eventos que coincidan con los filtros.</td></tr>{% endfor %}
+  </tbody></table></div>
+  {% if page_obj.has_other_pages %}<nav class="pagination"><div>Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}</div><div>{% if page_obj.has_previous %}<a href="?page={{ page_obj.previous_page_number }}&{{ request.GET.urlencode|cut:'page=' }}">Anterior</a>{% endif %}{% if page_obj.has_next %}<a href="?page={{ page_obj.next_page_number }}&{{ request.GET.urlencode|cut:'page=' }}">Siguiente</a>{% endif %}</div></nav>{% endif %}
+</div>
+{% endblock %}

@@ -35,6 +35,9 @@ from .models import (
     SolicitudPrestamo,
     SolicitudLibro,
     LogActividad,
+    PermisoAuditoria,
+    UsuarioPermisoAuditoria,
+    PerfilUsuario,
 )
 
 from .forms import (
@@ -69,7 +72,20 @@ def obtener_ip(request):
     return request.META.get('REMOTE_ADDR')
 
 
-def registrar_log(request, accion, modulo, descripcion, resultado='EXITO', usuario=None):
+def registrar_log(
+    request,
+    accion,
+    modulo,
+    descripcion,
+    resultado='EXITO',
+    usuario=None,
+    entidad=None,
+    objeto_id=None,
+    datos_anteriores=None,
+    datos_nuevos=None,
+    tipo=None,
+    nivel=None,
+):
     """Crea un registro de auditoría sin interrumpir la operación principal."""
     try:
         usuario_log = usuario
@@ -78,18 +94,93 @@ def registrar_log(request, accion, modulo, descripcion, resultado='EXITO', usuar
             if request.user.is_authenticated:
                 usuario_log = request.user
 
+        acciones_seguridad = {
+            'LOGIN',
+            'LOGIN_FALLIDO',
+            'LOGOUT',
+            'ACCESO_NO_AUTORIZADO',
+            '2FA_CONFIGURADO',
+            '2FA_VERIFICADO',
+            'RECUPERACION_PASSWORD',
+            'CAMBIAR_CONTRASENA',
+            'CAMBIAR_PERMISOS',
+            'CAMBIAR_ROL',
+        }
+
+        if tipo is None:
+            tipo = (
+                LogActividad.TIPO_SEGURIDAD
+                if accion in acciones_seguridad
+                else LogActividad.TIPO_CAMBIO
+            )
+
+        if nivel is None:
+            nivel = LogActividad.NIVEL_INFO
+            if accion == 'LOGIN_FALLIDO':
+                nivel = LogActividad.NIVEL_ADVERTENCIA
+            elif accion == 'ACCESO_NO_AUTORIZADO':
+                nivel = LogActividad.NIVEL_CRITICO
+            elif accion in {'CAMBIAR_PERMISOS', 'CAMBIAR_ROL'}:
+                nivel = LogActividad.NIVEL_CRITICO
+
+        # Los datos de auditoría nunca deben contener credenciales o secretos.
+        campos_sensibles = {
+            'password', 'password_hash', 'contrasena', 'contraseña',
+            'two_factor_secret', 'otp_secret', 'otp', 'token',
+            'access_token', 'refresh_token', 'recovery_token',
+            'api_key', 'client_secret', 'private_key', 'session_key',
+        }
+
+        def sanitizar(datos):
+            if datos is None:
+                return None
+            if isinstance(datos, dict):
+                return {
+                    str(clave): '[REDACTADO]' if str(clave).lower() in campos_sensibles
+                    else sanitizar(valor)
+                    for clave, valor in datos.items()
+                }
+            if isinstance(datos, (list, tuple)):
+                return [sanitizar(valor) for valor in datos]
+            return datos
+
         LogActividad.objects.create(
             usuario=usuario_log,
+            tipo=tipo,
             accion=accion,
+            nivel=nivel,
             modulo=modulo,
+            entidad=entidad,
+            objeto_id=str(objeto_id) if objeto_id is not None else None,
             descripcion=descripcion[:500],
+            datos_anteriores=sanitizar(datos_anteriores),
+            datos_nuevos=sanitizar(datos_nuevos),
             ip=obtener_ip(request),
+            user_agent=request.META.get('HTTP_USER_AGENT', '')[:500],
             resultado=resultado,
         )
     except Exception:
         # La auditoría nunca debe impedir que la operación funcional continúe.
         pass
 
+
+
+# ============================================================
+# PERMISOS DE AUDITORÍA
+# ============================================================
+
+def tiene_permiso_auditoria(usuario, codigo):
+    """Comprueba un permiso propio de la aplicación, sin usar Django Admin."""
+    if not usuario or not usuario.is_authenticated:
+        return False
+
+    return UsuarioPermisoAuditoria.objects.filter(
+        perfil__usuario=usuario,
+        perfil__tipo_usuario='ADMIN',
+        permiso__codigo=codigo,
+        permiso__activo=True,
+        activo=True,
+    ).exists()
 
 # ============================================================
 # CONFIGURACIÓN OPEN LIBRARY
@@ -199,6 +290,14 @@ def admin_required(view_func):
             return redirect("login")
 
         if not (request.user.is_staff or request.user.is_superuser):
+            registrar_log(
+                request,
+                'ACCESO_NO_AUTORIZADO',
+                'Seguridad',
+                'Intento de acceso a una sección administrativa sin permisos.',
+                resultado='BLOQUEADO',
+                nivel=LogActividad.NIVEL_CRITICO,
+            )
             return HttpResponseForbidden(
                 "No tienes permisos para acceder a esta sección."
             )
@@ -217,6 +316,14 @@ def lector_required(view_func):
             return redirect("login")
 
         if request.user.is_staff or request.user.is_superuser:
+            registrar_log(
+                request,
+                'ACCESO_NO_AUTORIZADO',
+                'Seguridad',
+                'Intento de acceso de un administrador a una sección exclusiva para lectores.',
+                resultado='BLOQUEADO',
+                nivel=LogActividad.NIVEL_ADVERTENCIA,
+            )
             return HttpResponseForbidden(
                 "Esta sección es exclusiva para lectores."
             )
@@ -224,11 +331,27 @@ def lector_required(view_func):
         try:
             perfil = request.user.perfil
         except Exception:
+            registrar_log(
+                request,
+                'ACCESO_NO_AUTORIZADO',
+                'Seguridad',
+                'Usuario sin perfil de lector intentó acceder al área de lectores.',
+                resultado='BLOQUEADO',
+                nivel=LogActividad.NIVEL_CRITICO,
+            )
             return HttpResponseForbidden(
                 "El usuario no tiene un perfil de lector configurado."
             )
 
         if perfil.tipo_usuario != "LECTOR" or perfil.lector is None:
+            registrar_log(
+                request,
+                'ACCESO_NO_AUTORIZADO',
+                'Seguridad',
+                'Usuario sin configuración válida de lector intentó acceder al área de lectores.',
+                resultado='BLOQUEADO',
+                nivel=LogActividad.NIVEL_CRITICO,
+            )
             return HttpResponseForbidden(
                 "El usuario no tiene un lector asociado."
             )
@@ -437,6 +560,18 @@ def login_usuario(request):
                 return redirect("lector_dashboard")
 
             return redirect("inicio")
+
+        # Si las credenciales son inválidas, se registra el evento de seguridad.
+        else:
+            username_intento = request.POST.get('username', '').strip()
+            registrar_log(
+                request,
+                'LOGIN_FALLIDO',
+                'Autenticación',
+                f'Intento de inicio de sesión fallido para el usuario "{username_intento[:100]}".',
+                resultado='ERROR',
+                nivel=LogActividad.NIVEL_ADVERTENCIA,
+            )
 
     else:
 
@@ -3167,4 +3302,259 @@ def libro_editorial_delete(
         {
             "relacion": relacion
         }
+    )
+# ============================================================
+# AUDITORÍA - INTERFAZ PROPIA
+# ============================================================
+
+from django.core.paginator import Paginator
+from django.http import HttpResponse
+from django.db.models import Q
+import csv
+from functools import wraps
+
+
+def auditoria_permiso_requerido(codigo):
+    """Protege una vista mediante los permisos propios de auditoría."""
+    def decorator(view_func):
+        @wraps(view_func)
+        def wrapper(request, *args, **kwargs):
+            if not request.user.is_authenticated:
+                return redirect("login")
+
+            if not tiene_permiso_auditoria(request.user, codigo):
+                registrar_log(
+                    request,
+                    "ACCESO_NO_AUTORIZADO",
+                    "Auditoría",
+                    f"Intento de acceso a auditoría sin el permiso {codigo}.",
+                    resultado="BLOQUEADO",
+                    nivel=LogActividad.NIVEL_CRITICO,
+                )
+                return HttpResponseForbidden(
+                    "No tienes el permiso necesario para acceder a esta sección."
+                )
+
+            return view_func(request, *args, **kwargs)
+        return wrapper
+    return decorator
+
+
+@auditoria_permiso_requerido("AUDITORIA_VER")
+def auditoria_list(request):
+    """Muestra el historial de auditoría con filtros y paginación."""
+    logs = LogActividad.objects.select_related("usuario").all()
+
+    usuario = request.GET.get("usuario", "").strip()
+    accion = request.GET.get("accion", "").strip()
+    tipo = request.GET.get("tipo", "").strip()
+    nivel = request.GET.get("nivel", "").strip()
+    resultado = request.GET.get("resultado", "").strip()
+    fecha_desde = request.GET.get("fecha_desde", "").strip()
+    fecha_hasta = request.GET.get("fecha_hasta", "").strip()
+
+    if usuario:
+        logs = logs.filter(
+            Q(usuario__username__icontains=usuario)
+            | Q(usuario__first_name__icontains=usuario)
+            | Q(usuario__last_name__icontains=usuario)
+        )
+    if accion:
+        logs = logs.filter(accion=accion)
+    if tipo:
+        logs = logs.filter(tipo=tipo)
+    if nivel:
+        logs = logs.filter(nivel=nivel)
+    if resultado:
+        logs = logs.filter(resultado=resultado)
+    if fecha_desde:
+        logs = logs.filter(fecha_hora__date__gte=fecha_desde)
+    if fecha_hasta:
+        logs = logs.filter(fecha_hora__date__lte=fecha_hasta)
+
+    paginator = Paginator(logs.order_by("-fecha_hora"), 25)
+    page_obj = paginator.get_page(request.GET.get("page"))
+
+    context = {
+        "page_obj": page_obj,
+        "logs": page_obj.object_list,
+        "acciones": LogActividad.ACCION_CHOICES,
+        "tipos": LogActividad.TIPO_CHOICES,
+        "niveles": LogActividad.NIVEL_CHOICES,
+        "resultados": LogActividad.RESULTADO_CHOICES,
+        "filtros": {
+            "usuario": usuario,
+            "accion": accion,
+            "tipo": tipo,
+            "nivel": nivel,
+            "resultado": resultado,
+            "fecha_desde": fecha_desde,
+            "fecha_hasta": fecha_hasta,
+        },
+        "puede_detalle": tiene_permiso_auditoria(request.user, "AUDITORIA_DETALLE"),
+        "puede_exportar": tiene_permiso_auditoria(request.user, "AUDITORIA_EXPORTAR"),
+        "puede_gestionar": tiene_permiso_auditoria(request.user, "AUDITORIA_GESTIONAR"),
+    }
+    return render(request, "biblioteca_app/auditoria/list.html", context)
+
+
+@auditoria_permiso_requerido("AUDITORIA_DETALLE")
+def auditoria_detalle(request, pk):
+    """Muestra el detalle de un evento de auditoría."""
+    log = get_object_or_404(
+        LogActividad.objects.select_related("usuario"),
+        pk=pk,
+    )
+    return render(request, "biblioteca_app/auditoria/detail.html", {"log": log})
+
+
+@auditoria_permiso_requerido("AUDITORIA_EXPORTAR")
+def auditoria_exportar(request):
+    """Exporta los registros filtrados a CSV."""
+    logs = LogActividad.objects.select_related("usuario").all()
+
+    usuario = request.GET.get("usuario", "").strip()
+    accion = request.GET.get("accion", "").strip()
+    tipo = request.GET.get("tipo", "").strip()
+    nivel = request.GET.get("nivel", "").strip()
+    resultado = request.GET.get("resultado", "").strip()
+    fecha_desde = request.GET.get("fecha_desde", "").strip()
+    fecha_hasta = request.GET.get("fecha_hasta", "").strip()
+
+    if usuario:
+        logs = logs.filter(usuario__username__icontains=usuario)
+    if accion:
+        logs = logs.filter(accion=accion)
+    if tipo:
+        logs = logs.filter(tipo=tipo)
+    if nivel:
+        logs = logs.filter(nivel=nivel)
+    if resultado:
+        logs = logs.filter(resultado=resultado)
+    if fecha_desde:
+        logs = logs.filter(fecha_hora__date__gte=fecha_desde)
+    if fecha_hasta:
+        logs = logs.filter(fecha_hora__date__lte=fecha_hasta)
+
+    # Evita generar exportaciones excesivamente grandes desde la interfaz.
+    logs = logs.order_by("-fecha_hora")[:10000]
+
+    response = HttpResponse(content_type="text/csv; charset=utf-8")
+    response["Content-Disposition"] = 'attachment; filename="auditoria_biblioteca.csv"'
+    response.write("\ufeff")
+    writer = csv.writer(response)
+    writer.writerow([
+        "ID", "Fecha", "Usuario", "Tipo", "Nivel", "Acción", "Módulo",
+        "Entidad", "Objeto ID", "Resultado", "Descripción", "IP", "User Agent",
+        "Datos anteriores", "Datos nuevos",
+    ])
+
+    for log in logs:
+        writer.writerow([
+            log.pk,
+            log.fecha_hora.strftime("%Y-%m-%d %H:%M:%S"),
+            log.usuario.username if log.usuario else "Sistema",
+            log.get_tipo_display(),
+            log.get_nivel_display(),
+            log.get_accion_display(),
+            log.modulo,
+            log.entidad or "",
+            log.objeto_id or "",
+            log.get_resultado_display(),
+            log.descripcion,
+            log.ip or "",
+            log.user_agent or "",
+            log.datos_anteriores or "",
+            log.datos_nuevos or "",
+        ])
+
+    registrar_log(
+        request,
+        "CREAR",
+        "Auditoría",
+        "Exportación de registros de auditoría realizada.",
+        resultado="EXITO",
+        entidad="LogActividad",
+        tipo=LogActividad.TIPO_SEGURIDAD,
+    )
+    return response
+
+
+@auditoria_permiso_requerido("AUDITORIA_GESTIONAR")
+def auditoria_permisos(request):
+    """Gestiona las asignaciones de permisos de auditoría de administradores."""
+    if request.method == "POST":
+        perfil_id = request.POST.get("perfil_id")
+        permiso_id = request.POST.get("permiso_id")
+        accion = request.POST.get("accion")
+
+        perfil = get_object_or_404(
+            PerfilUsuario,
+            pk=perfil_id,
+            tipo_usuario="ADMIN",
+        )
+        permiso = get_object_or_404(PermisoAuditoria, pk=permiso_id, activo=True)
+
+        asignacion = UsuarioPermisoAuditoria.objects.filter(
+            perfil=perfil,
+            permiso=permiso,
+        ).first()
+
+        if accion == "quitar":
+            if asignacion:
+                asignacion.activo = False
+                asignacion.save(update_fields=["activo"])
+                registrar_log(
+                    request,
+                    "CAMBIAR_PERMISOS",
+                    "Auditoría",
+                    f"Se desactivó el permiso {permiso.codigo} para {perfil.usuario.username}.",
+                    entidad="UsuarioPermisoAuditoria",
+                    objeto_id=asignacion.pk,
+                    datos_anteriores={"activo": True, "permiso": permiso.codigo},
+                    datos_nuevos={"activo": False, "permiso": permiso.codigo},
+                )
+        else:
+            if asignacion:
+                asignacion.activo = True
+                asignacion.asignado_por = request.user
+                asignacion.save(update_fields=["activo", "asignado_por"])
+            else:
+                asignacion = UsuarioPermisoAuditoria.objects.create(
+                    perfil=perfil,
+                    permiso=permiso,
+                    asignado_por=request.user,
+                    activo=True,
+                )
+            registrar_log(
+                request,
+                "CAMBIAR_PERMISOS",
+                "Auditoría",
+                f"Se asignó el permiso {permiso.codigo} a {perfil.usuario.username}.",
+                entidad="UsuarioPermisoAuditoria",
+                objeto_id=asignacion.pk,
+                datos_nuevos={"activo": True, "permiso": permiso.codigo},
+            )
+
+        return redirect("auditoria_permisos")
+
+    perfiles = list(PerfilUsuario.objects.filter(tipo_usuario="ADMIN").select_related("usuario"))
+    permisos = list(PermisoAuditoria.objects.filter(activo=True))
+    asignaciones = UsuarioPermisoAuditoria.objects.filter(activo=True).select_related("perfil", "permiso")
+    mapa = {(a.perfil_id, a.permiso_id): True for a in asignaciones}
+
+    filas = []
+    for perfil in perfiles:
+        filas.append({
+            "perfil": perfil,
+            "permisos": [
+                {"permiso": permiso, "activo": (perfil.pk, permiso.pk) in mapa}
+                for permiso in permisos
+            ],
+        })
+
+    return render(
+        request,
+        "biblioteca_app/auditoria/permisos.html",
+        {"filas": filas, "permisos": permisos},
     )

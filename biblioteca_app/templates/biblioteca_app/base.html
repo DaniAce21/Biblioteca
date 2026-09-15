@@ -4,6 +4,7 @@
 -->
 
 {% load static %}
+{% load auditoria_tags %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -36,6 +37,7 @@
             <a href="{% url 'prestamo_list' %}" class="sidebar-link {% if request.resolver_match.url_name in 'prestamo_list prestamo_create prestamo_update prestamo_delete prestamo_devolver' %}active{% endif %}"><i class="bi bi-journal-check"></i><span>Préstamos</span></a>
             <a href="{% url 'devolucion_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'devolucion_list' %}active{% endif %}"><i class="bi bi-arrow-return-left"></i><span>Devoluciones</span></a>
             <a href="{% url 'solicitud_prestamo_list' %}" class="sidebar-link {% if request.resolver_match.url_name == 'solicitud_prestamo_list' %}active{% endif %}"><i class="bi bi-inbox-fill"></i><span>Solicitudes</span></a>
+            {% puede_auditoria "AUDITORIA_VER" as puede_ver_auditoria %}{% if puede_ver_auditoria %}<a href="{% url 'auditoria_list' %}" class="sidebar-link {% if request.resolver_match.url_name in 'auditoria_list auditoria_detalle auditoria_exportar auditoria_permisos' %}active{% endif %}"><i class="bi bi-shield-check"></i><span>Auditoría</span></a>{% endif %}
         {% else %}
             <a href="{% url 'lector_dashboard' %}" class="sidebar-link {% if request.resolver_match.url_name == 'lector_dashboard' %}active{% endif %}"><i class="bi bi-grid-1x2-fill"></i><span>Inicio</span></a>
             <a href="{% url 'libros_lector' %}" class="sidebar-link {% if request.resolver_match.url_name == 'libros_lector' %}active{% endif %}"><i class="bi bi-book-fill"></i><span>Catálogo</span></a>
@@ -81,6 +83,7 @@
     <a href="{% url 'prestamo_list' %}" class="sidebar-link"><i class="bi bi-journal-check"></i><span>Préstamos</span></a>
     <a href="{% url 'devolucion_list' %}" class="sidebar-link"><i class="bi bi-arrow-return-left"></i><span>Devoluciones</span></a>
     <a href="{% url 'solicitud_prestamo_list' %}" class="sidebar-link"><i class="bi bi-inbox-fill"></i><span>Solicitudes</span></a>
+    {% puede_auditoria "AUDITORIA_VER" as puede_ver_auditoria_mobile %}{% if puede_ver_auditoria_mobile %}<a href="{% url 'auditoria_list' %}" class="sidebar-link"><i class="bi bi-shield-check"></i><span>Auditoría</span></a>{% endif %}
   {% else %}
     <a href="{% url 'lector_dashboard' %}" class="sidebar-link"><i class="bi bi-grid-1x2-fill"></i><span>Inicio</span></a>
     <a href="{% url 'libros_lector' %}" class="sidebar-link"><i class="bi bi-book-fill"></i><span>Catálogo</span></a>

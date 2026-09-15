@@ -431,7 +431,13 @@ button,input,select,textarea{font:inherit}
 .summary-box.yellow{border-top:3px solid #dca614}
 .summary-box.orange{border-top:3px solid #ec7617}
 
-.offcanvas.mobile-sidebar{background:#0d0d0f;color:#fff;width:280px}
+/* El menú móvil solo debe aparecer cuando se abre desde pantallas pequeñas.
+   Evita que el navegador muestre el contenido del offcanvas como un segundo menú
+   si Bootstrap no carga a tiempo o no aplica su regla de ocultamiento. */
+.offcanvas.mobile-sidebar{display:none;background:#0d0d0f;color:#fff;width:280px}
+@media (max-width:991.98px){
+  .offcanvas.mobile-sidebar{display:block}
+}
 .mobile-sidebar .offcanvas-header{border-bottom:1px solid var(--border);padding:18px}
 .mobile-sidebar .offcanvas-body{padding:14px}
 .mobile-sidebar .sidebar-link{margin-bottom:4px}

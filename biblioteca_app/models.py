@@ -656,21 +656,135 @@ class SolicitudLibro(models.Model):
             f"{self.Titulo}"
         )
 
+
+# ============================================================
+# PERMISOS DE AUDITORÍA
+# ============================================================
+
+class PermisoAuditoria(models.Model):
+    """Catálogo de permisos independientes para la auditoría."""
+
+    codigo = models.CharField(
+        max_length=50,
+        unique=True,
+        db_column='Codigo'
+    )
+
+    nombre = models.CharField(
+        max_length=100,
+        db_column='Nombre'
+    )
+
+    descripcion = models.TextField(
+        blank=True,
+        db_column='Descripcion'
+    )
+
+    activo = models.BooleanField(
+        default=True,
+        db_column='Activo'
+    )
+
+    fecha_creacion = models.DateTimeField(
+        auto_now_add=True,
+        db_column='FechaCreacion'
+    )
+
+    class Meta:
+        db_table = 'PERMISO_AUDITORIA'
+        ordering = ['codigo']
+
+    def __str__(self):
+        return self.nombre
+
+
+class UsuarioPermisoAuditoria(models.Model):
+    """Asigna un permiso de auditoría a un perfil de usuario."""
+
+    perfil = models.ForeignKey(
+        'PerfilUsuario',
+        on_delete=models.CASCADE,
+        related_name='permisos_auditoria',
+        db_column='PerfilId'
+    )
+
+    permiso = models.ForeignKey(
+        PermisoAuditoria,
+        on_delete=models.CASCADE,
+        related_name='asignaciones',
+        db_column='PermisoId'
+    )
+
+    fecha_asignacion = models.DateTimeField(
+        auto_now_add=True,
+        db_column='FechaAsignacion'
+    )
+
+    asignado_por = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='permisos_auditoria_asignados',
+        db_column='AsignadoPorId'
+    )
+
+    activo = models.BooleanField(
+        default=True,
+        db_column='Activo'
+    )
+
+    class Meta:
+        db_table = 'USUARIO_PERMISO_AUDITORIA'
+        ordering = ['-fecha_asignacion']
+        constraints = [
+            models.UniqueConstraint(
+                fields=['perfil', 'permiso'],
+                name='perfil_permiso_auditoria_unico'
+            )
+        ]
+
+    def __str__(self):
+        return f'{self.perfil.usuario.username} - {self.permiso.codigo}'
+
 # ============================================================
 # LOG DE ACTIVIDAD / AUDITORÍA
 # ============================================================
 
 class LogActividad(models.Model):
 
-    """Registra de forma persistente las acciones importantes del sistema."""
+    """Registra las acciones importantes y eventos de seguridad del sistema."""
+
+    TIPO_CAMBIO = 'CAMBIO_DATOS'
+    TIPO_SEGURIDAD = 'SEGURIDAD'
+
+    TIPO_CHOICES = [
+        (TIPO_CAMBIO, 'Cambio de datos'),
+        (TIPO_SEGURIDAD, 'Seguridad'),
+    ]
+
+    NIVEL_INFO = 'INFO'
+    NIVEL_ADVERTENCIA = 'ADVERTENCIA'
+    NIVEL_CRITICO = 'CRITICO'
+
+    NIVEL_CHOICES = [
+        (NIVEL_INFO, 'Información'),
+        (NIVEL_ADVERTENCIA, 'Advertencia'),
+        (NIVEL_CRITICO, 'Crítico'),
+    ]
 
     ACCION_CHOICES = [
         ('LOGIN', 'Inicio de sesión'),
+        ('LOGIN_FALLIDO', 'Inicio de sesión fallido'),
         ('LOGOUT', 'Cierre de sesión'),
+        ('ACCESO_NO_AUTORIZADO', 'Acceso no autorizado'),
         ('REGISTRO', 'Registro de usuario'),
         ('2FA_CONFIGURADO', '2FA configurado'),
         ('2FA_VERIFICADO', '2FA verificado'),
         ('RECUPERACION_PASSWORD', 'Recuperación de contraseña'),
+        ('CAMBIAR_CONTRASENA', 'Cambio de contraseña'),
+        ('CAMBIAR_PERMISOS', 'Cambio de permisos'),
+        ('CAMBIAR_ROL', 'Cambio de rol'),
         ('CREAR', 'Creación'),
         ('EDITAR', 'Edición'),
         ('ELIMINAR', 'Eliminación'),
@@ -685,6 +799,7 @@ class LogActividad(models.Model):
         ('EXITO', 'Éxito'),
         ('ERROR', 'Error'),
         ('INFO', 'Información'),
+        ('BLOQUEADO', 'Bloqueado'),
     ]
 
     usuario = models.ForeignKey(
@@ -696,10 +811,24 @@ class LogActividad(models.Model):
         db_column='UsuarioID',
     )
 
+    tipo = models.CharField(
+        max_length=20,
+        choices=TIPO_CHOICES,
+        default=TIPO_CAMBIO,
+        db_column='Tipo',
+    )
+
     accion = models.CharField(
         max_length=30,
         choices=ACCION_CHOICES,
         db_column='Accion',
+    )
+
+    nivel = models.CharField(
+        max_length=15,
+        choices=NIVEL_CHOICES,
+        default=NIVEL_INFO,
+        db_column='Nivel',
     )
 
     modulo = models.CharField(
@@ -707,9 +836,35 @@ class LogActividad(models.Model):
         db_column='Modulo',
     )
 
+    entidad = models.CharField(
+        max_length=80,
+        null=True,
+        blank=True,
+        db_column='Entidad',
+    )
+
+    objeto_id = models.CharField(
+        max_length=50,
+        null=True,
+        blank=True,
+        db_column='ObjetoID',
+    )
+
     descripcion = models.CharField(
         max_length=500,
         db_column='Descripcion',
+    )
+
+    datos_anteriores = models.JSONField(
+        null=True,
+        blank=True,
+        db_column='DatosAnteriores',
+    )
+
+    datos_nuevos = models.JSONField(
+        null=True,
+        blank=True,
+        db_column='DatosNuevos',
     )
 
     fecha_hora = models.DateTimeField(
@@ -723,6 +878,13 @@ class LogActividad(models.Model):
         db_column='IP',
     )
 
+    user_agent = models.CharField(
+        max_length=500,
+        null=True,
+        blank=True,
+        db_column='UserAgent',
+    )
+
     resultado = models.CharField(
         max_length=10,
         choices=RESULTADO_CHOICES,
@@ -733,6 +895,11 @@ class LogActividad(models.Model):
     class Meta:
         db_table = 'LOG_ACTIVIDAD'
         ordering = ['-fecha_hora', '-id']
+        indexes = [
+            models.Index(fields=['tipo', '-fecha_hora'], name='log_tipo_fecha_idx'),
+            models.Index(fields=['nivel', '-fecha_hora'], name='log_nivel_fecha_idx'),
+            models.Index(fields=['accion', '-fecha_hora'], name='log_accion_fecha_idx'),
+        ]
 
     def __str__(self):
         """Devuelve una representación legible del registro de auditoría."""

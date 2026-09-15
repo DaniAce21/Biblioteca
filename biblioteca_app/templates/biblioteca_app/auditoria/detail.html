@@ -1,0 +1,11 @@
+{% extends "biblioteca_app/base.html" %}
+{% load static %}
+{% block title %}Detalle de auditoría{% endblock %}
+{% block page_eyebrow %}Seguridad{% endblock %}
+{% block page_heading %}Detalle del evento{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-auditoria.css' %}">{% endblock %}
+{% block content %}
+<div class="audit-header"><div><span class="audit-kicker">EVENTO #{{ log.pk }}</span><h1>{{ log.get_accion_display }}</h1><p>{{ log.descripcion }}</p></div><a class="audit-button secondary" href="{% url 'auditoria_list' %}"><i class="bi bi-arrow-left"></i> Volver</a></div>
+<div class="detail-grid"><section class="audit-card detail-card"><h2>Información del evento</h2><dl><dt>Fecha</dt><dd>{{ log.fecha_hora|date:"d/m/Y H:i:s" }}</dd><dt>Usuario</dt><dd>{{ log.usuario.username|default:"Sistema" }}</dd><dt>Tipo</dt><dd>{{ log.get_tipo_display }}</dd><dt>Nivel</dt><dd>{{ log.get_nivel_display }}</dd><dt>Acción</dt><dd>{{ log.get_accion_display }}</dd><dt>Resultado</dt><dd>{{ log.get_resultado_display }}</dd><dt>Módulo</dt><dd>{{ log.modulo }}</dd><dt>Entidad</dt><dd>{{ log.entidad|default:"—" }}</dd><dt>ID objeto</dt><dd>{{ log.objeto_id|default:"—" }}</dd></dl></section><section class="audit-card detail-card"><h2>Contexto de seguridad</h2><dl><dt>IP</dt><dd>{{ log.ip|default:"—" }}</dd><dt>User Agent</dt><dd class="break">{{ log.user_agent|default:"—" }}</dd></dl></section></div>
+<div class="detail-grid"><section class="audit-card detail-card"><h2>Datos anteriores</h2><pre>{{ log.datos_anteriores|default:"Sin datos registrados." }}</pre></section><section class="audit-card detail-card"><h2>Datos nuevos</h2><pre>{{ log.datos_nuevos|default:"Sin datos registrados." }}</pre></section></div>
+{% endblock %}

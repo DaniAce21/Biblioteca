@@ -1,0 +1,11 @@
+{% extends "biblioteca_app/base.html" %}
+{% load static %}
+{% block title %}Permisos de auditoría{% endblock %}
+{% block page_eyebrow %}Seguridad{% endblock %}
+{% block page_heading %}Permisos de auditoría{% endblock %}
+{% block extra_css %}<link rel="stylesheet" href="{% static 'biblioteca_app/css/biblioteca-app-auditoria.css' %}">{% endblock %}
+{% block content %}
+<div class="audit-header"><div><span class="audit-kicker">CONTROL DE ACCESO</span><h1>Permisos independientes</h1><p>Administra quién puede consultar, detallar o exportar la auditoría sin usar Django Admin. Esta sección requiere un permiso de gestión independiente.</p></div><a class="audit-button secondary" href="{% url 'auditoria_list' %}"><i class="bi bi-clock-history"></i> Ver auditoría</a></div>
+<div class="audit-card table-card"><div class="table-heading"><div><strong>Administradores de la aplicación</strong><span>Los permisos se asignan por perfil.</span></div></div><div class="table-responsive"><table class="audit-table permission-table"><thead><tr><th>Usuario</th><th>Rol</th>{% for permiso in permisos %}<th>{{ permiso.nombre }}<small>{{ permiso.codigo }}</small></th>{% endfor %}</tr></thead><tbody>{% for fila in filas %}<tr><td><strong>{{ fila.perfil.usuario.username }}</strong><small>{{ fila.perfil.usuario.email|default:"Sin correo" }}</small></td><td>Administrador</td>{% for item in fila.permisos %}<td><form method="post" class="permission-form">{% csrf_token %}<input type="hidden" name="perfil_id" value="{{ fila.perfil.id }}"><input type="hidden" name="permiso_id" value="{{ item.permiso.id }}"><button name="accion" value="{% if item.activo %}quitar{% else %}asignar{% endif %}" class="permission-toggle {% if item.activo %}active{% endif %}">{% if item.activo %}<i class="bi bi-check2"></i> Activo{% else %}<i class="bi bi-plus"></i> Asignar{% endif %}</button></form></td>{% endfor %}</tr>{% empty %}<tr><td colspan="10" class="empty-row">No existen perfiles administrativos.</td></tr>{% endfor %}</tbody></table></div></div>
+<div class="audit-card permission-cards"><h2>Permisos disponibles</h2>{% for permiso in permisos %}<article><div><strong>{{ permiso.nombre }}</strong><span>{{ permiso.codigo }}</span></div><p>{{ permiso.descripcion }}</p></article>{% endfor %}</div>
+{% endblock %}
