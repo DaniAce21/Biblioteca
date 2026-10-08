@@ -1,4 +1,4 @@
-# Sistema de Biblioteca — versión completa, comentada y corregida
+﻿# Sistema de Biblioteca — versión completa, comentada y corregida
 
 ## Descripción
 
@@ -163,3 +163,19 @@ portada, clave Open Library, enlace externo y si el título ya existe en el
 catálogo local. La futura interfaz del lector podrá utilizar estos datos para
 mostrar resultados visuales y permitir seleccionar un libro antes de enviar
 la solicitud de adquisición.
+
+## Configuración y ejecución
+
+1. Clona este repositorio
+2. Instala las dependencias: pip install -r requirements.txt
+3. Copia .env.example a .env y configura las variables:
+   - SECRET_KEY: clave secreta de Django
+   - DEBUG: True para desarrollo / False para producción
+   - ALLOWED_HOSTS: lista separada por comas
+4. Aplica migraciones: python manage.py migrate
+5. Crea superusuario: python manage.py createsuperuser
+6. Ejecuta el servidor: python manage.py runserver
+
+## Nota de seguridad
+
+SECRET_KEY y DEBUG se configuran mediante variables de entorno. Nunca commitees tu archivo .env. Usa .env.example como plantilla.
